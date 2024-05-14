@@ -55,7 +55,7 @@
           <a class="nav-link" href="#">Kontak</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{{ route('admin.auth.logs.index') }}">Login</a>
+          <a class="nav-link" href="/admin">Login</a>
         </li>
       </ul>
     </div>

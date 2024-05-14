@@ -54,7 +54,6 @@ class JurnalSiswaController extends AdminController
 
         $grid->column('id',__('Id'));
         $grid->column('tanggal',__('Tgl'));
-        // $grid->column('nama_guru',__('Nama Guru'));
         $grid->column('kelas.nama_kelas',__('Kelas'));
         $grid->column('jam.nama_jam',__('Jam Mengajar'));
         $grid->column('mapel.nama_mapel',__('Mapel ID'));
@@ -71,6 +70,7 @@ class JurnalSiswaController extends AdminController
 
         $grid->disableCreateButton();
         $grid->disableExport();
+        $grid->disableActions();
 
         return $grid;
     }

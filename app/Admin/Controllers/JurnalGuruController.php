@@ -51,11 +51,9 @@ class JurnalGuruController extends AdminController
             // $filter->like('name', 'name');
         });
 
-        $grid->model()->where('validasi', '=', '1');
-
+        // $grid->model()->where('validasi', '=', '1');
         $grid->column('id',__('Id'));
         $grid->column('tanggal',__('Tgl'));
-        $grid->column('nama_guru',__('Nama Guru'));
         $grid->column('kelas.nama_kelas',__('Kelas ID'));
         $grid->column('jam.nama_jam',__('Jam Mengajar'));
         $grid->column('mapel.nama_mapel',__('Mapel'));
@@ -63,6 +61,7 @@ class JurnalGuruController extends AdminController
         $grid->column('siswa.nama_siswa',__('Absen'));
         $grid->column('keterangan.nama_keterangan',__('Keterangan'));
 
+        // $grid->column('admin.name',__('Guru'));
         // $grid->column('validasi',__('Validasi'));
 
         return $grid;
@@ -87,7 +86,6 @@ class JurnalGuruController extends AdminController
         $show->field('materi',__('Materi'));
         $show->field('siswa.nama_siswa',__('Absen'));
         $show->field('keterangan.nama_keterangan',__('Keterangan'));
-        $show -> field('admin.name',__('Guru'));
 
         // $show->field('validasi',__('Validasi'));
 
