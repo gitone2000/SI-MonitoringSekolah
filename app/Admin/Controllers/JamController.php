@@ -59,7 +59,7 @@ class JamController extends AdminController
         $form = new Form(new Jam());
 
         $form -> text('nama_jam',__('Nama Jam'));
-        $form -> text('waktu',__('Waktu'));
+        $form -> time('waktu',__('Waktu'));
 
         return $form;
     }

@@ -33,4 +33,6 @@ Route::group([
     $router->resource('jam', JamController::class);
     $router->resource('jadwal', JadwalController::class);
 
+    // $router->put('admin/jadwal/{jadwal}', [JadwalController::class, 'update'])->name('admin.jadwal.update');
+
 });

@@ -59,8 +59,8 @@ class JurnalGuruController extends AdminController
         $grid->column('mapel.nama_mapel',__('Mapel'));
         $grid->column('materi',__('Materi'));
         $grid->column('siswa.nama_siswa',__('Absen'));
-        $grid->column('keterangan.nama_keterangan',__('Keterangan'));
 
+        // $grid->column('keterangan.nama_keterangan',__('Keterangan'));
         // $grid->column('admin.name',__('Guru'));
         // $grid->column('validasi',__('Validasi'));
 
@@ -85,8 +85,8 @@ class JurnalGuruController extends AdminController
         $show->field('mapel.mapel_id',__('Mapel'));
         $show->field('materi',__('Materi'));
         $show->field('siswa.nama_siswa',__('Absen'));
-        $show->field('keterangan.nama_keterangan',__('Keterangan'));
 
+        // $show->field('keterangan.nama_keterangan',__('Keterangan'));
         // $show->field('validasi',__('Validasi'));
 
         return $show;
@@ -113,7 +113,7 @@ class JurnalGuruController extends AdminController
         $form -> select('mapel_id',__('Mapel'))->options($daftar_mapel);
         $form -> text  ('materi',__('Materi'));
         $form -> select('siswa_id',__('Absen'))->options($daftar_siswa);
-        $form -> select('keterangan_id',__('Keterangan'))->options($daftar_keterangan);
+        // $form -> select('keterangan_id',__('Keterangan'))->options($daftar_keterangan);
         $form->hidden('user_id',__('User ID'))->value(Admin::user()->id);
 
         // $form -> switch('validasi',__('Validasi'));
