@@ -14,6 +14,7 @@
             background-image: url('/vendor/laravel-admin/AdminLTE/dist/img/2020-11-06.jpg');
             background-size: cover;
             background-position: center;
+            /* background-repeat: no-repeat; */
             background-attachment: fixed;
             color: rgb(255, 255, 255); /* Warna teks yang kontras dengan gambar latar belakang */
         }
@@ -68,18 +69,18 @@
 <div class="container mt-5">
   <div class="row">
 
-    <div class="col-1 mx-4 animate__animated animate__fadeInLeft">
+    <div class="col-1 mx-3 mb-3 animate__animated animate__fadeInLeft">
         <img src="/vendor/laravel-admin/AdminLTE/dist/img/Logo SMK Bandar.png" alt="Logo" style="max-width: 100px; height: auto;">
       </div>
 
-    <div class="col-lg-7 mb-3 animate__animated animate__backInUp">
+    <div class="col-lg-7 mb-4 animate__animated animate__backInUp">
       <h2><b>Aplikasi Monitoring KBM</b></h2>
       <h2><b>SMK Negeri Bandar</b></h2>
       <p>Harmonis Efektif dan Efisien Bangga Amanah Tangguh</p>
       <a class="btn btn-primary" href="/admin">Mulai Sekarang</a>
     </div>
 
-    <div class="col-lg-3 mx-3 animate__animated animate__backInUp">
+    <div class="col-lg-3 animate__animated animate__backInUp">
       <div class="card transparent-background">
         <div class="card-body">
           <h5 class="card-title">Tentang Kami</h5>

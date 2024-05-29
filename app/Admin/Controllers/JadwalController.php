@@ -5,11 +5,12 @@ namespace App\Admin\Controllers;
 use App\Admin\Actions\CheckRow;
 use App\Admin\Actions\Post\JurnalEdit;
 use App\Models\Guru;
-use App\Models\Jadwal;
 use App\Models\Jam;
+use App\Models\Jurnal;
 use App\Models\Kelas;
 use App\Models\Mapel;
 use Encore\Admin\Controllers\AdminController;
+use Encore\Admin\Facades\Admin;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Show;
@@ -21,7 +22,7 @@ class JadwalController extends AdminController
      *
      * @var string
      */
-    protected $title = 'Jadwal';
+    protected $title = 'Jurnal';
 
     /**
      * Make a grid builder.
@@ -30,27 +31,32 @@ class JadwalController extends AdminController
      */
     protected function grid()
     {
-        $grid = new Grid(new Jadwal());
-        $grid->column('id',__('Id'));
+        $grid = new Grid(new Jurnal());
+
+        // $grid->column('id',__('Id'));
         $grid->column('guru.nama_guru',__('Nama Guru'));
-        $grid->column('jam.nama_jam',__('Jam Ke-'));
         $grid->column('kelas.nama_kelas',__('Kelas'));
+        $grid->column('jam.nama_jam',__('Jam Ke-'));
+        $grid->column('hari',__('Hari'));
         $grid->column('mapel.nama_mapel',__('Mapel'));
 
-        // $grid->column('id', 'ID');
+        $Tahunajaran = config('Tahun Ajaran');
+        $grid->model()->where('tahunajaran','=',$Tahunajaran);
+        $grid->column('tahunajaran','Tahun Ajaran');
 
-        $grid->column('title', 'Title')->editable();
+        // $grid->column('edit', __('Jurnal'))->display(function () {
+        //     return "<a href='" . route('admin.jadwal.edit', ['jadwal' => $this->getKey()]) . "' class='btn btn-xs btn-success'><i class='fa fa-edit'></i> Jurnal</a>";
+        // });
 
+        // $grid->actions(function ($actions) {
+        //     $actions->add(new JurnalEdit());
+        // });
 
         // $grid->column('title')->display(function ($actions) {
 
         //     return $actions->add(new JurnalEdit());
 
         // });
-
-        $grid->actions(function ($actions) {
-            $actions->add(new JurnalEdit());
-        });
 
         // $grid->actions(function ($actions) {
 
@@ -63,10 +69,6 @@ class JadwalController extends AdminController
         //     $url = route('admin.jadwal.edit', ['jadwal' => $this->getKey()]);
         //     return "<a href='{{$url}}' class='btn btn-xs btn-primary'><i class='fa fa-edit'></i> Edit</a>";
         // });
-        $grid->column('edit', __('Jurnal'))->display(function () {
-            return "<a href='" . route('admin.jadwal.edit', ['jadwal' => $this->getKey()]) . "' class='btn btn-xs btn-primary'><i class='fa fa-edit'></i> Jurnal</a>";
-        });
-
         // $grid->column('title')->editable();
 
         return $grid;
@@ -82,11 +84,11 @@ class JadwalController extends AdminController
     protected function detail($id)
     {
 
-        $show = new Show(Jadwal::findOrFail($id));
+        $show = new Show(Jurnal::findOrFail($id));
         $show->field('id',__('Id'));
         $show->field('guru.nama_guru',__('Nama Guru'));
-        $show->field('jam.nama_jam',__('Jam Ke-'));
         $show->field('kelas.nama_kelas',__('Kelas'));
+        $show->field('jam.nama_jam',__('Jam Mengajar'));
         $show->field('mapel.nama_mapel',__('Mapel'));
 
 
@@ -100,29 +102,30 @@ class JadwalController extends AdminController
      */
     protected function form()
     {
-        $form = new Form(new Jadwal());
+        $form = new Form(new Jurnal());
 
         $form->column(1/2, function ($form) {
-
+        $daftar_guru = Guru::all()->pluck('nama_guru','id');
+        $daftar_jam = Jam::all()->pluck('nama_jam','id');
+        $daftar_kelas = Kelas::all()->pluck('nama_kelas','id');
         $daftar_mapel = Mapel::all()->pluck('nama_mapel','id');
 
+        $form -> select('guru_id',__('Guru'))->options($daftar_guru);
+        $form -> select('kelas_id',__('Kelas'))->options($daftar_kelas);
+        $form -> select('jam_id',__('Jam Mengajar'))->options($daftar_jam);
+        $form -> text('hari',__('Hari'));
         $form -> select('mapel_id',__('Mapel'))->options($daftar_mapel);
+
+        $form -> text('tahunajaran','Tahun Ajaran');
 
         });
 
         $form->column(1/2, function ($form) {
+        $form -> date('tanggal',__('Tgl'));
+        $form -> textarea('materi',__('Materi'));
+        });
 
-            $daftar_guru = Guru::all()->pluck('nama_guru','id');
-            $daftar_jam = Jam::all()->pluck('nama_jam','id');
-            $daftar_kelas = Kelas::all()->pluck('nama_kelas','id');
-            $daftar_mapel = Mapel::all()->pluck('nama_mapel','id');
-
-            $form -> select('guru_id',__('Guru'))->options($daftar_guru);
-            $form -> select('jam_id',__('Jam Ke-'))->options($daftar_jam);
-            $form -> select('kelas_id',__('Kelas'))->options($daftar_kelas);
-            $form -> select('mapel_id',__('Mapel'))->options($daftar_mapel);
-
-            });
+        $form->hidden('user_id',__('User ID'))->value(Admin::user()->id);
 
         return $form;
     }

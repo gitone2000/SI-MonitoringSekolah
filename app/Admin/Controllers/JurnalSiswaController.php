@@ -2,14 +2,13 @@
 
 namespace App\Admin\Controllers;
 
+use App\Models\Guru;
 use Encore\Admin\Facades\Admin;
 use Encore\Admin\Controllers\AdminController;
 use App\Models\Jam;
 use App\Models\Jurnal;
 use App\Models\Kelas;
-use App\Models\Keterangan;
 use App\Models\Mapel;
-use App\Models\Materi;
 use App\Models\Siswa;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
@@ -38,35 +37,49 @@ class JurnalSiswaController extends AdminController
             // Remove the default id filter
             $filter->disableIdFilter();
 
+            $guru= Guru::all()->pluck('nama_guru','id');
+            $filter->equal('guru_id', 'Guru')->select($guru);
+
             $kelas= Kelas::all()->pluck('nama_kelas','id');
-            $filter->equal('kelas_id', 'kelas')->select($kelas);
-            // $filter->scope('male', 'Male')->where('gender', 'm');
+            $filter->equal('kelas_id', 'Kelas')->select($kelas);
 
             $filter->scope('new', 'Recently modified')
             ->whereDate('tanggal', date('Y-m-d'))
             ->orWhere('tanggal', date('Y-m-d'));
-
-            // $filter->equal('column')->placeholder('Please input...');
-
-            // Add a column filter
-            // $filter->like('name', 'name');
         });
 
-        $grid->column('id',__('Id'));
+        // $grid->column('id',__('Id'));
         $grid->column('tanggal',__('Tgl'));
+        $grid->column('guru.nama_guru',__('Nama Guru'));
         $grid->column('kelas.nama_kelas',__('Kelas'));
-        $grid->column('jam.nama_jam',__('Jam Mengajar'));
-        $grid->column('mapel.nama_mapel',__('Mapel ID'));
+        $grid->column('jam.nama_jam',__('Jam Ke-'));
+        $grid->column('hari',__('Hari'));
+        $grid->column('mapel.nama_mapel',__('Mapel'));
         $grid->column('materi',__('Materi'));
-        $grid->column('siswa.nama_siswa',__('Absen'));
-        // $grid->column('keterangan.nama_keterangan',__('Keterangan'));
-        $grid->column('admin.name',__('Guru'));
+
+        $grid->column('id', 'Ijin')->display(function ($id) {
+            $jurnal = Jurnal::with('ijin')->find($id);
+            if ($jurnal && $jurnal->ijin) {
+                $siswaNames = $jurnal->ijin->pluck('nama_siswa')->toArray();
+                return implode(', ', $siswaNames);
+            }
+            return 'Tidak ada siswa';
+        });
+
+        // $grid->column('siswa.nama_siswa',__('I'));
+        // $grid->column('siswa.nama_siswa',__('S'));
+        // $grid->column('siswa.nama_siswa',__('A'));
+
+        // $grid->column('admin.name',__('Guru'));
 
         $states = [
-            'on' => ['value' => 1, 'text' => 'Approved', 'color' => 'primary'],
-            'off' => ['value' => 2, 'text' => 'Not', 'color' => 'danger'],
+            'on' => ['value' => 1, 'text' => 'Yes', 'color' => 'primary'],
+            'off' => ['value' => 2, 'text' => 'No', 'color' => 'danger'],
         ];
-        $grid->column('validasi')->switch($states);
+        $grid->column('validasi','Approved')->switch($states);
+
+        $Tahunajaran = config('Tahun Ajaran');
+        $grid->model()->where('tahunajaran','=',$Tahunajaran);
 
         $grid->disableCreateButton();
         $grid->disableExport();
@@ -93,7 +106,6 @@ class JurnalSiswaController extends AdminController
         $show->field('mapel.mapel_id',__('Mapel ID'));
         $show->field('materi',__('Materi'));
         $show->field('siswa.nama_siswa',__('Absen'));
-        // $show->field('keterangan.nama_keterangan',__('Keterangan'));
         $show->field('validasi',__('Validasi'));
 
         return $show;
@@ -110,7 +122,6 @@ class JurnalSiswaController extends AdminController
 
         $daftar_kelas = Kelas::all()->pluck('nama_kelas','id');
         $daftar_mapel = Mapel::all()->pluck('nama_mapel','id');
-        $daftar_keterangan = Keterangan::all()->pluck('nama_keterangan','id');
         $daftar_jam = Jam::all()->pluck('nama_jam','id');
         $daftar_siswa = Siswa::all()->pluck('nama_siswa','id');
 
@@ -123,7 +134,8 @@ class JurnalSiswaController extends AdminController
 
         // $form -> select('keterangan_id',__('Keterangan'))->options($daftar_keterangan);
         // $form->hidden('user_id',__('User ID'))->value(Admin::user()->id);
-        // $form -> switch('validasi',__('Validasi'));
+        $form -> switch('validasi',__('Validasi'));
+
 
         return $form;
     }
