@@ -6,6 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Encore\Admin\Auth\Database\Administrator;
 
+/**
+ * Class Jurnal
+ *
+ * @property \Illuminate\Database\Eloquent\Collection $izin
+ * @property \Illuminate\Database\Eloquent\Collection $sakit
+ * @property \Illuminate\Database\Eloquent\Collection $alpha
+ */
+
 class Jurnal extends Model
 {
     use HasFactory;
@@ -32,18 +40,19 @@ class Jurnal extends Model
     {
         return $this->belongsTo(Jam::class,'jam_id');
     }
-    public function ijin()
+    public function izin()
     {
-        return $this->belongsToMany(Siswa::class,'jurnal_siswa', 'jurnal_id', 'siswa_id');
+        return $this->belongsToMany(Siswa::class,'jurnal_siswa', 'jurnal_id', 'siswa_izin_id');
     }
-    // public function sakit()
-    // {
-    //     return $this->belongsToMany(Siswa::class,'jurnal_siswa', 'jurnal_id', 'siswa_id');
-    // }
-    // public function alpha()
-    // {
-    //     return $this->belongsToMany(Siswa::class,'jurnal_siswa', 'jurnal_id', 'siswa_id');
-    // }
+    public function sakit()
+    {
+        return $this->belongsToMany(Siswa::class,'jurnal_siswa', 'jurnal_id', 'siswa_sakit_id');
+    }
+    public function alpha()
+    {
+        return $this->belongsToMany(Siswa::class,'jurnal_siswa', 'jurnal_id', 'siswa_alpha_id');
+    }
+
     public function jurnalsiswa()
     {
         return $this->belongsTo(JurnalSiswa::class);

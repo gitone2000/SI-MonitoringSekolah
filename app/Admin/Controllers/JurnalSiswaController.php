@@ -57,10 +57,25 @@ class JurnalSiswaController extends AdminController
         $grid->column('mapel.nama_mapel',__('Mapel'));
         $grid->column('materi',__('Materi'));
 
-        $grid->column('id', 'Ijin')->display(function ($id) {
-            $jurnal = Jurnal::with('ijin')->find($id);
-            if ($jurnal && $jurnal->ijin) {
-                $siswaNames = $jurnal->ijin->pluck('nama_siswa')->toArray();
+        $grid->column('izin', 'Izin')->display(function () {
+            if ($this->izin->isNotEmpty()) {
+                $siswaNames = $this->izin->pluck('nama_siswa')->toArray();
+                return implode(', ', $siswaNames);
+            }
+            return 'Tidak ada siswa';
+        });
+
+        $grid->column('sakit', 'Sakit')->display(function () {
+            if ($this->sakit->isNotEmpty()) {
+                $siswaNames = $this->sakit->pluck('nama_siswa')->toArray();
+                return implode(', ', $siswaNames);
+            }
+            return 'Tidak ada siswa';
+        });
+
+        $grid->column('alhpa', 'Alpha')->display(function () {
+            if ($this->alpha->isNotEmpty()) {
+                $siswaNames = $this->alpha->pluck('nama_siswa')->toArray();
                 return implode(', ', $siswaNames);
             }
             return 'Tidak ada siswa';

@@ -107,14 +107,50 @@ class JurnalController extends AdminController
         $grid->column('mapel.nama_mapel',__('Mapel'));
         $grid->column('materi',__('Materi'));
 
-        $grid->column('id', 'Ijin')->display(function ($id) {
-            $jurnal = Jurnal::with('ijin')->find($id);
-            if ($jurnal && $jurnal->ijin) {
-                $siswaNames = $jurnal->ijin->pluck('nama_siswa')->toArray();
+        // $grid->column('izin', 'Izin')->display(function ($izin) {
+        //     $jurnal = Jurnal::with('izin')->find($izin);
+        //     if ($jurnal && $jurnal->izin) {
+        //         $siswaNames = $jurnal->izin->pluck('nama_siswa')->toArray();
+        //         return implode(', ', $siswaNames);
+        //     }
+        //     return 'Tidak ada siswa';
+        // });
+        // $grid->column('sakit', 'Sakit')->display(function ($sakit) {
+        //     $jurnal = Jurnal::with('sakit')->find($sakit);
+        //     if ($jurnal && $jurnal->sakit) {
+        //         $siswaNames = $jurnal->sakit->pluck('nama_siswa')->toArray();
+        //         return implode(', ', $siswaNames);
+        //     }
+        //     return 'Tidak ada siswa';
+        // });
+
+
+        $grid->model()->with(['izin', 'sakit']);
+
+        $grid->column('izin', 'Izin')->display(function () {
+            if ($this->izin->isNotEmpty()) {
+                $siswaNames = $this->izin->pluck('nama_siswa')->toArray();
                 return implode(', ', $siswaNames);
             }
             return 'Tidak ada siswa';
         });
+
+        $grid->column('sakit', 'Sakit')->display(function () {
+            if ($this->sakit->isNotEmpty()) {
+                $siswaNames = $this->sakit->pluck('nama_siswa')->toArray();
+                return implode(', ', $siswaNames);
+            }
+            return 'Tidak ada siswa';
+        });
+
+        $grid->column('alhpa', 'Alpha')->display(function () {
+            if ($this->alpha->isNotEmpty()) {
+                $siswaNames = $this->alpha->pluck('nama_siswa')->toArray();
+                return implode(', ', $siswaNames);
+            }
+            return 'Tidak ada siswa';
+        });
+
 
         // $grid->column('siswa.nama_siswa',__('I'));
         // $grid->column('siswa.nama_siswa',__('S'));

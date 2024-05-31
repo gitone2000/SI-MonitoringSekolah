@@ -59,14 +59,15 @@ class JurnalGuruController extends AdminController
         $grid->column('hari',__('Hari'));
         $grid->column('mapel.nama_mapel',__('Mapel'));
 
-        $grid->column('id', 'Ijin')->display(function ($id) {
-            $jurnal = Jurnal::with('ijin')->find($id);
-            if ($jurnal && $jurnal->ijin) {
-                $siswaNames = $jurnal->ijin->pluck('nama_siswa')->toArray();
-                return implode(', ', $siswaNames);
-            }
-            return 'Tidak ada siswa';
-        });
+        // $grid->column('id', 'Ijin')->display(function ($id) {
+        //     $jurnal = Jurnal::with('ijin')->find($id);
+        //     if ($jurnal && $jurnal->ijin) {
+        //         $siswaNames = $jurnal->ijin->pluck('nama_siswa')->toArray();
+        //         return implode(', ', $siswaNames);
+        //     }
+        //     return 'Tidak ada siswa';
+        // });
+
         // $grid->column('id', 'Sakit')->display(function ($id) {
         //     $jurnal = Jurnal::with('sakit')->find($id);
         //     if ($jurnal && $jurnal->sakit) {
@@ -155,9 +156,9 @@ class JurnalGuruController extends AdminController
             $form -> date('tanggal',__('Tgl'));
             $form -> textarea('materi',__('Materi'));
 
-            $form->multipleSelect('ijin','Ijin')->options(Siswa::all()->pluck('nama_siswa','id'));
-            // $form->multipleSelect('sakit','Sakit')->options(Siswa::all()->pluck('nama_siswa','id'));
-            // $form->multipleSelect('alpha','Alpha')->options(Siswa::all()->pluck('nama_siswa','id'));
+            $form->multipleSelect('izin','Izin')->options(Siswa::all()->pluck('nama_siswa','id'));
+            $form->multipleSelect('sakit','Sakit')->options(Siswa::all()->pluck('nama_siswa','id'));
+            $form->multipleSelect('alpha','Alpha')->options(Siswa::all()->pluck('nama_siswa','id'));
 
             });
 
