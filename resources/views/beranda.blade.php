@@ -80,7 +80,7 @@
       <a class="btn btn-primary" href="/admin">Mulai Sekarang</a>
     </div>
 
-    <div class="col-lg-3 animate__animated animate__backInUp">
+    <div class="col-lg-3 mt-2 animate__animated animate__backInUp">
       <div class="card transparent-background">
         <div class="card-body">
           <h5 class="card-title">Tentang Kami</h5>

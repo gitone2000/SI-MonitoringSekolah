@@ -50,7 +50,7 @@ class JurnalController extends AdminController
         //     // });
         // });
         $grid->quickSearch(function ($model, $query) {
-            $model->where('title', $query)->orWhere('desc', 'like', "%{$query}%");
+            $model->where('guru', $query)->orWhere('nama_guru', 'like', "%{$query}%");
         });
 
         $grid->filter(function($filter)

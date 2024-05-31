@@ -32,6 +32,21 @@ class JadwalController extends AdminController
     protected function grid()
     {
         $grid = new Grid(new Jurnal());
+        $grid->filter(function($filter)
+        {
+            // Remove the default id filter
+            $filter->disableIdFilter();
+
+            $guru= Guru::all()->pluck('nama_guru','id');
+            $filter->equal('guru_id', 'Guru')->select($guru);
+
+            $kelas= Kelas::all()->pluck('nama_kelas','id');
+            $filter->equal('kelas_id', 'Kelas')->select($kelas);
+
+            $filter->scope('new', 'Recently modified')
+            ->whereDate('tanggal', date('Y-m-d'))
+            ->orWhere('tanggal', date('Y-m-d'));
+        });
 
         // $grid->column('id',__('Id'));
         $grid->column('guru.nama_guru',__('Nama Guru'));
