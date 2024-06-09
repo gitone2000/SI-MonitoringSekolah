@@ -31,6 +31,7 @@ class SiswaController extends AdminController
         $grid->column('nis',__('NIS'));
         $grid->column('nama_siswa',__('Nama'));
         $grid->column('kelas.nama_kelas',__('Kelas'));
+        $grid->column('gender',__('Jenis Kelamin'));
 
         return $grid;
     }
@@ -49,6 +50,7 @@ class SiswaController extends AdminController
         $show->field('nis',__('NIS'));
         $show->field('nama_siswa',__('Nama'));
         $show->field('kelas_id',__('Kelas'));
+        $show->field('gender',__('Jenis Kelamin'));
 
         return $show;
     }
@@ -67,6 +69,7 @@ class SiswaController extends AdminController
         $form->text('nis',__('NIS'));
         $form->text('nama_siswa',__('Name'));
         $form -> select('kelas_id',__('Kelas'))->options($daftar_kelas);
+        $form->text('gender',__('Jenis Kelamin'));
 
         return $form;
     }

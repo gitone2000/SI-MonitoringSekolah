@@ -30,6 +30,11 @@ class GuruController extends AdminController
         $grid->column('id',__('Id'));
         $grid->column('nip',__('NIP'));
         $grid->column('nama_guru',__('Nama'));
+        $grid->column('gol_ruang',__('Gol/Ruang'));
+        $grid->column('mata_pelajaran',__('Mapel'));
+        $grid->column('no_tlp',__('No Telepon'));
+        $grid->column('gender',__('Jenis Kelamin'));
+
         // $grid->column('mapel.nama_mapel',__('Mapel Diajar'));
 
         return $grid;
@@ -48,6 +53,12 @@ class GuruController extends AdminController
         $show->field('id',__("Id"));
         $show->field('nip',__('NIP'));
         $show->field('nama_guru',__('Nama'));
+        $show->field('gol_ruang',__('Gol/Ruang'));
+        $show->field('mata_pelajaran',__('Mapel'));
+        $show->field('no_tlp',__('NO Telepon'));
+        $show->field('gender',__('Jenis Kelamin'));
+
+
         // $show->field('mapel_id',__('Mapel Diajar'));
 
 
@@ -67,6 +78,12 @@ class GuruController extends AdminController
 
         $form->text('nip',__('NIP'));
         $form->text('nama_guru',__('Name'));
+        $form->text('gol_ruang',__('Gol/Ruang'));
+        $form->text('mata_pelajaran',__('Mapel'));
+        $form->text('no_tlp',__('NO Telepon'));
+        $form->text('gender',__('Jenis Kelamin'));
+
+
         // $form->select('mapel_id',__('Mapel'))->options($daftar_mapel);
 
         return $form;

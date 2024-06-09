@@ -27,8 +27,9 @@ class JamController extends AdminController
         $grid = new Grid(new Jam());
 
         $grid->column('id',__('Id'));
-        $grid->column('nama_jam',__('Name'));
-        $grid->column('waktu',__('Waktu'));
+        $grid->column('jam-ke',__('Jam Ke-'));
+        $grid->column('waktu_awal',__('Waktu Awal'));
+        $grid->column('waktu_akhir',__('Waktu Akhir'));
 
         return $grid;
     }
@@ -43,8 +44,9 @@ class JamController extends AdminController
     {
         $show = new Show(Jam::findOrFail($id));
         $show->field('id',__('Id'));
-        $show->field('nama_jam',__('Name'));
-        $show->field('waktu',__('Waktu'));
+        $show->field('jam_ke',__('Jam Ke-'));
+        $show->field('waktu_awal',__('Waktu Awal'));
+        $show->field('waktu_akhir',__('Waktu Akhir '));
 
         return $show;
     }
@@ -58,8 +60,10 @@ class JamController extends AdminController
     {
         $form = new Form(new Jam());
 
-        $form -> text('nama_jam',__('Nama Jam'));
-        $form -> time('waktu',__('Waktu'));
+        $form->text('id',__('Id'));
+        $form->text('jam_ke',__('Jam Ke-'));
+        $form->text('waktu_awal',__('Waktu Awal'));
+        $form->text('waktu_akhir',__('Waktu Akhir'));
 
         return $form;
     }

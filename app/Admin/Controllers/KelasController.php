@@ -27,7 +27,10 @@ class KelasController extends AdminController
         $grid = new Grid(new Kelas());
 
         $grid->column('id', __('Id'));
-        $grid->column('nama_kelas', __('Nama kelas'));
+        $grid->column('kode', __('Kode'));
+        $grid->column('kelas', __('Kelas'));
+        $grid->column('keterangan_kelas', __('Keterangan Kelas'));
+        $grid->column('jurusan', __('Jurusan'));
 
         return $grid;
     }
@@ -43,7 +46,10 @@ class KelasController extends AdminController
         $show = new Show(Kelas::findOrFail($id));
 
         $show->field('id', __('Id'));
-        $show->field('nama_kelas', __('Nama kelas'));
+        $show->field('kode', __('Kode'));
+        $show->field('kelas', __('Kelas'));
+        $show->field('keterangan_kelas', __('Keterangan Kelas'));
+        $show->field('jurusan', __('Jurusan'));
 
         return $show;
     }
@@ -57,7 +63,10 @@ class KelasController extends AdminController
     {
         $form = new Form(new Kelas());
 
-        $form->text('nama_kelas', __('Nama kelas'));
+        $form->text('kode', __('Kode'));
+        $form->text('kelas', __('Kelas'));
+        $form->text('keterangan_kelas', __('Keterangan Kelas'));
+        $form->text('jurusan', __('Jurusan'));
 
         return $form;
     }

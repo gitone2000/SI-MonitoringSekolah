@@ -27,7 +27,10 @@ class MapelController extends AdminController
         $grid = new Grid(new Mapel());
 
         $grid->column('id',__('Id'));
-        $grid->column('nama_mapel',__('Name'));
+        $grid->column('nama_mapel',__('Mapel'));
+        $grid->column('muatan',__('Muatan'));
+        $grid->column('jurusan',__('Jurusan'));
+        $grid->column('kelas',__('Kelas '));
 
         return $grid;
     }
@@ -43,7 +46,10 @@ class MapelController extends AdminController
         $show = new Show(Mapel::findOrFail($id));
 
         $show->field('id',__('Id'));
-        $show->field('nama_mapel',__('Name'));
+        $show->field('nama_mapel',__('Mapel'));
+        $show->field('muatan',__('Muatan'));
+        $show->field('jurusan',__('Jurusan'));
+        $show->field('kelas',__('Kelas'));
 
         return $show;
     }
@@ -56,8 +62,11 @@ class MapelController extends AdminController
     protected function form()
     {
         $form = new Form(new Mapel());
-
-        $form -> text('nama_mapel',__('Name'));
+        
+        $form->text('nama_mapel',__('Mapel'));
+        $form->text('muatan',__('Muatan'));
+        $form->text('jurusan',__('Jurusan'));
+        $form->text('kelas',__('Kelas'));
 
         return $form;
     }
