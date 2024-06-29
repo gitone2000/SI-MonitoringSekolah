@@ -25,10 +25,13 @@ Route::group([
     $router->resource('mapel', MapelController::class);
     $router->resource('guru', GuruController::class);
     $router->resource('kelas', KelasController::class);
-    $router->resource('keterangan', KeteranganController::class);
+    // $router->resource('keterangan', KeteranganController::class);
     $router->resource('siswa', SiswaController::class);
     $router->resource('jurnal', JurnalController::class);
     $router->resource('jurnalguru', JurnalGuruController::class);
+    // $router->get('jurnalguru/edit/{jurnal}',[JurnalGuruController::class,'editJurnal'])->name('jurnalguru.editJurnal');
+    // $router->put('jurnalguru/update/{jurnal}',[JurnalGuruController::class,'updateJurnal'])->name('jurnalguru.updateJurnal');
+    // $router->post('jurnalguru/createjurnal',[JurnalGuruController::class,'createJurnal'])->name('jurnalguru.createJurnal');
     $router->resource('jurnalsiswa', JurnalSiswaController::class);
     $router->resource('jam', JamController::class);
     $router->resource('jadwal', JadwalController::class);

@@ -4,10 +4,13 @@ namespace App\Admin\Controllers;
 
 use App\Models\Guru;
 use App\Models\Mapel;
+use Encore\Admin\Auth\Database\Administrator;
 use Encore\Admin\Controllers\AdminController;
+use Encore\Admin\Facades\Admin;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Show;
+use Illuminate\Support\Facades\Auth;
 
 class GuruController extends AdminController
 {
@@ -27,7 +30,7 @@ class GuruController extends AdminController
     {
         $grid = new Grid(new Guru());
 
-        $grid->column('id',__('Id'));
+        // $grid->column('id',__('Id'));
         $grid->column('nip',__('NIP'));
         $grid->column('nama_guru',__('Nama'));
         $grid->column('gol_ruang',__('Gol/Ruang'));
@@ -77,12 +80,14 @@ class GuruController extends AdminController
         $daftar_mapel = Mapel::all()->pluck('nama_mapel','id');
 
         $form->text('nip',__('NIP'));
-        $form->text('nama_guru',__('Name'));
+        $form->text('nama_guru',__('Nama'));
         $form->text('gol_ruang',__('Gol/Ruang'));
         $form->text('mata_pelajaran',__('Mapel'));
         $form->text('no_tlp',__('NO Telepon'));
         $form->text('gender',__('Jenis Kelamin'));
 
+        $users = Administrator::all()->pluck('name','id');
+        $form->select('user_id',__('User'))->options($users);
 
         // $form->select('mapel_id',__('Mapel'))->options($daftar_mapel);
 

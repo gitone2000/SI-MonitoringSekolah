@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Encore\Admin\Auth\Database\Administrator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class Jurnal
@@ -20,9 +22,9 @@ class Jurnal extends Model
     protected $table = "jurnal";
     public $timestamps = true;
 
-    // protected $casts = [
-    //     'siswa_id' => 'json',
-    // ];
+    protected $fillable = [
+        'guru_id', 'kelas_id', 'jam_id', 'hari', 'mapel_id', 'tanggal', 'materi'
+    ];
 
     public function kelas()
     {
@@ -40,35 +42,59 @@ class Jurnal extends Model
     {
         return $this->belongsTo(Jam::class,'jam_id');
     }
-    public function izin()
+    public function childs()
     {
-        return $this->belongsToMany(Siswa::class,'jurnal_siswa', 'jurnal_id', 'siswa_izin_id');
-    }
-    public function sakit()
-    {
-        return $this->belongsToMany(Siswa::class,'jurnal_siswa', 'jurnal_id', 'siswa_sakit_id');
-    }
-    public function alpha()
-    {
-        return $this->belongsToMany(Siswa::class,'jurnal_siswa', 'jurnal_id', 'siswa_alpha_id');
-    }
-
-    public function jurnalsiswa()
-    {
-        return $this->belongsTo(JurnalSiswa::class);
+        return $this->hasMany(JurnalChild::class, 'jurnal_id');
     }
     public function admin()
     {
         return $this->belongsTo(Administrator::class,'user_id');
     }
 
-    // public function getTagsAttribute($value)
+    // public function getIzinAttribute()
     // {
-    //     return explode(',', $value);
+    //     return $this->getSiswaNames($this->childs->pluck('izin')->flatten()->toArray());
     // }
-    // public function setTagsAttribute($value)
+
+    // public function getSakitAttribute()
     // {
-    //     $this->attributes['absen'] = implode(',', $value);
+    //     return $this->getSiswaNames($this->childs->pluck('sakit')->flatten()->toArray());
+    // }
+
+    // public function getAlphaAttribute()
+    // {
+    //     return $this->getSiswaNames($this->childs->pluck('alpha')->flatten()->toArray());
+    // }
+
+    // private function getSiswaNames($ids)
+    // {
+    //     if (!empty($ids)) {
+    //         $names = Siswa::whereIn('id', $ids)->pluck('nama_siswa')->toArray();
+    //         return implode(', ', $names);
+    //     }
+    //     return '';
+    // }
+
+    // public function izin()
+    // {
+    //     return $this->belongsToMany(Siswa::class,'jurnal_siswa', 'jurnal_id', 'siswa_izin_id');
+    // }
+    // public function sakit()
+    // {
+    //     return $this->belongsToMany(Siswa::class,'jurnal_siswa', 'jurnal_id', 'siswa_sakit_id');
+    // }
+    // public function alpha()
+    // {
+    //     return $this->belongsToMany(Siswa::class,'jurnal_siswa', 'jurnal_id', 'siswa_alpha_id');
+    // }
+    // public function jurnalsiswa()
+    // {
+    //     return $this->belongsTo(JurnalSiswa::class);
+    // }
+    // public function childs()
+    // {
+    //     return $this->hasMany(Jurnal::class,'guru_id','id');
     // }
 
 }
+

@@ -18,24 +18,27 @@ class Siswa extends Model
     protected $table = "siswa";
 
     public $timestamps = false;
+    protected $fillable = [
+        'nama_siswa'
+    ];
     public function kelas()
     {
         return $this->belongsTo(Kelas::class,'kelas_id');
     }
-    public function jurnalsIzin()
-    {
-        return $this->belongsToMany(Jurnal::class, 'jurnal_siswa', 'siswa_izin_id', 'jurnal_id');
-    }
-
-    // Relasi many-to-many untuk sakit
-    public function jurnalsSakit()
-    {
-        return $this->belongsToMany(Jurnal::class, 'jurnal_siswa', 'siswa_sakit_id', 'jurnal_id');
-    }
-
-    // Relasi many-to-many untuk alpha
-    public function jurnalsAlpha()
-    {
-        return $this->belongsToMany(Jurnal::class, 'jurnal_siswa', 'siswa_alpha_id', 'jurnal_id');
-    }
 }
+// public function izin()
+    // {
+    //     return $this->belongsToMany(JurnalChild::class, 'jurnal_siswa', 'siswa_izin_id', 'jurnalchild_id');
+    // }
+
+    // // Relasi many-to-many untuk sakit
+    // public function sakit()
+    // {
+    //     return $this->belongsToMany(JurnalChild::class, 'jurnal_siswa', 'siswa_sakit_id', 'jurnalchild_id');
+    // }
+
+    // // Relasi many-to-many untuk alpha
+    // public function alpha()
+    // {
+    //     return $this->belongsToMany(JurnalChild::class, 'jurnal_siswa', 'siswa_alpha_id', 'jurnalchild_id');
+    // }

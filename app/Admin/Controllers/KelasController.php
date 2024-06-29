@@ -26,7 +26,7 @@ class KelasController extends AdminController
     {
         $grid = new Grid(new Kelas());
 
-        $grid->column('id', __('Id'));
+        // $grid->column('id', __('Id'));
         $grid->column('kode', __('Kode'));
         $grid->column('kelas', __('Kelas'));
         $grid->column('keterangan_kelas', __('Keterangan Kelas'));

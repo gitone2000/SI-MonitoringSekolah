@@ -7,12 +7,14 @@ use Encore\Admin\Facades\Admin;
 use Encore\Admin\Controllers\AdminController;
 use App\Models\Jam;
 use App\Models\Jurnal;
+use App\Models\JurnalChild;
 use App\Models\Kelas;
 use App\Models\Mapel;
 use App\Models\Siswa;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Show;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 class JurnalController extends AdminController
@@ -22,7 +24,7 @@ class JurnalController extends AdminController
      *
      * @var string
      */
-    protected $title = 'Jurnal';
+    protected $title = 'Rekap Jurnal';
 
     /**
      * Make a grid builder.
@@ -31,28 +33,7 @@ class JurnalController extends AdminController
      */
     protected function grid()
     {
-
-
         $grid = new Grid(new Jurnal());
-
-        // $grid->export(function ($export) {
-
-        //     $export->filename('up.csv');
-
-        //     $export->except(['validasi']);
-
-        //     // $export->only(['column3', 'column4']);
-
-        //     // $export->originalValue(['column1', 'column2']);
-
-        //     // $export->column('column_5', function ($value, $original) {
-        //     //     return $value;
-        //     // });
-        // });
-
-        // $grid->quickSearch(function ($model, $query) {
-        //     $model->where('guru', $query)->orWhere('nama_guru', 'like', "%{$query}%");
-        // });
 
         $grid->filter(function($filter)
         {
@@ -62,113 +43,72 @@ class JurnalController extends AdminController
             $guru= Guru::all()->pluck('nama_guru','id');
             $filter->equal('guru_id', 'Guru')->select($guru);
 
-            $kelas= Kelas::all()->pluck('nama_kelas','id');
+            $kelas= Kelas::all()->pluck('kode','id');
             $filter->equal('kelas_id', 'Kelas')->select($kelas);
 
             $filter->scope('new', 'Recently modified')
             ->whereDate('tanggal', date('Y-m-d'))
             ->orWhere('tanggal', date('Y-m-d'));
 
-            // $filter->scope('male', 'Male')->where('gender', 'm');
-
-            // $filter->equal('jurnal.guru_id','Guru')->placeholder('Please input...');
-
-
-            // $gurujurnal = DB::table('jurnal')
-            //     ->join('guru','jurnal.guru_id', '=', 'guru_id')
-            //     ->select('jurnal','nama_guru')
-            //     ->get();
-
-            $gurujurnal = Jurnal::join('guru', 'jurnal.guru_id', '=', 'guru.id')
-            ->pluck('guru.nama_guru', 'guru.id');
-
-            // $filter->where(function ($query) {
-            //     $query->whereHas('guru', function ($query) {
-            //         $query->where('nama_guru', 'like', "%{$gurujurnal->input}%");
-            //     });
-            // }, 'Nama Guru')->placeholder('Please input...');
-
-            // $filter->where(function ($query) use ($filter) {
-            //     $query->where('nama_guru', 'LIKE', "{$filter->input}%");
-            // }, 'Nama Guru')->placeholder('Masukkan');
-
-            // $filter->equal('guru_id','Nama Guru')->select($gurujurnal);
-
-            // Add a column filter
-            // $filter->like('name', 'name');
         });
 
+        $grid->model()->select('jurnal.*', 'jurnalchild.tanggal', 'jurnalchild.materi', 'jurnalchild.izin', 'jurnalchild.sakit', 'jurnalchild.alpha',)
+                      ->leftJoin('jurnalchild', 'jurnal.id', '=', 'jurnalchild.jurnal_id');
+
         // $grid->column('id',__('Id'));
+
+        $grid->model()->with('childs');
+
         $grid->column('tanggal',__('Tgl'));
         $grid->column('guru.nama_guru',__('Nama Guru'));
-        $grid->column('kelas.nama_kelas',__('Kelas'));
-        $grid->column('jam.nama_jam',__('Jam Ke-'));
+        $grid->column('kelas.kode',__('Kelas'));
+        // $grid->column('jam.jam_ke',__('Jam Ke-'));
+        $grid->column('jam', 'Jam Pelajaran')->display(function () {
+            return "| {$this->jam->jam_ke} | {$this->jam->waktu_awal} - {$this->jam->waktu_akhir} |";
+        });
         $grid->column('hari',__('Hari'));
         $grid->column('mapel.nama_mapel',__('Mapel'));
         $grid->column('materi',__('Materi'));
 
-        // $grid->column('izin', 'Izin')->display(function ($izin) {
-        //     $jurnal = Jurnal::with('izin')->find($izin);
-        //     if ($jurnal && $jurnal->izin) {
-        //         $siswaNames = $jurnal->izin->pluck('nama_siswa')->toArray();
-        //         return implode(', ', $siswaNames);
-        //     }
-        //     return 'Tidak ada siswa';
-        // });
-        // $grid->column('sakit', 'Sakit')->display(function ($sakit) {
-        //     $jurnal = Jurnal::with('sakit')->find($sakit);
-        //     if ($jurnal && $jurnal->sakit) {
-        //         $siswaNames = $jurnal->sakit->pluck('nama_siswa')->toArray();
-        //         return implode(', ', $siswaNames);
-        //     }
-        //     return 'Tidak ada siswa';
-        // });
 
-
-        $grid->model()->with(['izin', 'sakit']);
-
-        $grid->column('izin', 'Izin')->display(function () {
-            if ($this->izin->isNotEmpty()) {
-                $siswaNames = $this->izin->pluck('nama_siswa')->toArray();
-                return implode(', ', $siswaNames);
+        // dd($izin);
+        $grid->column('izin', 'Izin')->display(function ($izin) {
+            if ($izin) {
+                $ids = json_decode($izin);
+                $siswa = Siswa::whereIn('id', $ids)->pluck('nama_siswa')->join(', ');
+                return $siswa ?: '-';
             }
-            return 'Tidak ada siswa';
+            return '-';
         });
-
-        $grid->column('sakit', 'Sakit')->display(function () {
-            if ($this->sakit->isNotEmpty()) {
-                $siswaNames = $this->sakit->pluck('nama_siswa')->toArray();
-                return implode(', ', $siswaNames);
+        $grid->column('sakit', 'Sakit')->display(function ($sakit) {
+            if ($sakit) {
+                $ids = json_decode($sakit);
+                $siswa = Siswa::whereIn('id', $ids)->pluck('nama_siswa')->join(', ');
+                return $siswa ?: '-';
             }
-            return 'Tidak ada siswa';
+            return '-';
         });
-
-        $grid->column('alhpa', 'Alpha')->display(function () {
-            if ($this->alpha->isNotEmpty()) {
-                $siswaNames = $this->alpha->pluck('nama_siswa')->toArray();
-                return implode(', ', $siswaNames);
+        $grid->column('alpha', 'Alpha')->display(function ($alpha) {
+            if ($alpha) {
+                $ids = json_decode($alpha);
+                $siswa = Siswa::whereIn('id', $ids)->pluck('nama_siswa')->join(', ');
+                return $siswa ?: '-';
             }
-            return 'Tidak ada siswa';
+            return '-';
         });
-
-
-        // $grid->column('siswa.nama_siswa',__('I'));
-        // $grid->column('siswa.nama_siswa',__('S'));
-        // $grid->column('siswa.nama_siswa',__('A'));
-
-        $grid->column('admin.name',__('Inputer'));
-
-        $states = [
-            'on' => ['value' => 1, 'text' => 'Yes', 'color' => 'primary'],
-            'off' => ['value' => 2, 'text' => 'No', 'color' => 'danger'],
-        ];
-        $grid->column('validasi','Approved')->switch($states);
-
-        $grid->model()->where('validasi', '=', '1');
 
         $Tahunajaran = config('Tahun Ajaran');
         $grid->model()->where('tahunajaran','=',$Tahunajaran);
         $grid->column('tahunajaran','Tahun Ajaran');
+
+        // $grid->column('admin.name',__('Inputer'));
+        // $states = [
+        //     'on' => ['value' => 1, 'text' => 'Yes', 'color' => 'primary'],
+        //     'off' => ['value' => 2, 'text' => 'No', 'color' => 'danger'],
+        // ];
+        // $grid->column('validasi','Approved')->switch($states);
+
+        // $grid->model()->where('validasi', '=', 1);
 
         // $grid->footer(function ($query) {
 
@@ -178,11 +118,9 @@ class JurnalController extends AdminController
         //     return "<div style='padding: 10px;'>Total revenue ： $data</div>";
         // });
 
-
-        // $grid->column('validasi',__('Validasi'))->switch();
         // $grid->column('User')->display(function(){
         // });
-
+        $grid->disableActions();
         $grid->disableCreateButton();
 
         return $grid;
@@ -201,8 +139,8 @@ class JurnalController extends AdminController
         $show -> field('id',__('Id'));
         $show -> field('tanggal',__('Tgl'));
         $show -> field('guru.nama_guru',__('Nama Guru'));
-        $show -> field('kelas.nama_kelas',__('Kelas ID'));
-        $show -> field('jam.nama_jam',__('Jam Mengajar'));
+        $show -> field('kelas.kode',__('Kelas'));
+        $show -> field('jam.jam_ke',__('Jam Ke-'));
         $show -> field('hari',__('Hari'));
         $show -> field('mapel.nama_mapel',__('Mapel'));
         $show -> field('materi',__('Materi'));
@@ -238,7 +176,7 @@ class JurnalController extends AdminController
         // // $form->multipleSelect('siswa_id','siswa')->options(Siswa::all()->pluck('nama_siswa', 'id'));
         // // $form -> multipleSelect('siswa_id',trans('siswa'))->options($daftar_siswa);
 
-        // $form->hidden('user_id',__('User ID'))->value(Admin::user()->id);
+        // $form->text('user_id',__('User ID'))->value(Admin::user()->id);
 
         // // $form->display('updated_at', 'Updated time');
         // // $form -> switch('validasi',__('Validasi'));

@@ -55,7 +55,7 @@
 <body>
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-success animate__animated animate__fadeIn py-2">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary animate__animated animate__fadeIn py-2">
   <div class="container">
     <a class="navbar-brand" href="#"><b>APLIKASI MONITORING</b></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,7 +94,7 @@
       <h2><b>Aplikasi Monitoring KBM</b></h2>
       <h2><b>SMK Negeri Bandar</b></h2>
       <p>Harmonis Efektif dan Efisien Bangga Amanah Tangguh</p>
-      <a class="btn btn-primary" href="/admin">Mulai Sekarang</a>
+      <a class="btn btn-success" href="/admin">Mulai Sekarang</a>
     </div>
 
     <div class="col-lg-3 mt-2 animate__animated animate__backInUp">
@@ -102,7 +102,7 @@
         <div class="card-body">
           <h5 class="card-title">Tentang Kami</h5>
           <p class="card-text">SMK Negeri Bandar Pacitan adalah Sekolah Menengah Kejuruan Negeri yang terdapat di Kabupaten Pacitan, beralamat di Jl. Raya Bandar-Pacitan RT 2 RW 4 Kab. Pacitan.</p>
-          <a href="https://id.wikipedia.org/wiki/SMK_Negeri_1_Bandar_Pacitan" class="btn btn-primary" target="_blank">Selengkapnya</a>
+          <a href="https://id.wikipedia.org/wiki/SMK_Negeri_1_Bandar_Pacitan" class="btn btn-success" target="_blank">Selengkapnya</a>
         </div>
       </div>
     </div>
@@ -114,7 +114,7 @@
 <!-- Memuat Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-<footer class="bg-success text-white text-center py-2">
+<footer class="bg-primary text-white text-center py-2">
     <div class="container">
       <div class="row">
         <div class="col footer-icons">

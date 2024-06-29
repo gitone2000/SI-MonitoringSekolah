@@ -26,7 +26,7 @@ class MapelController extends AdminController
     {
         $grid = new Grid(new Mapel());
 
-        $grid->column('id',__('Id'));
+        // $grid->column('id',__('Id'));
         $grid->column('nama_mapel',__('Mapel'));
         $grid->column('muatan',__('Muatan'));
         $grid->column('jurusan',__('Jurusan'));
@@ -62,7 +62,7 @@ class MapelController extends AdminController
     protected function form()
     {
         $form = new Form(new Mapel());
-        
+
         $form->text('nama_mapel',__('Mapel'));
         $form->text('muatan',__('Muatan'));
         $form->text('jurusan',__('Jurusan'));

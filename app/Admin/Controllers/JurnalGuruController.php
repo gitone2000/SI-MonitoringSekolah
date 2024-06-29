@@ -14,16 +14,30 @@ use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Facades\Admin;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
+use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\Response;
 
 class JurnalGuruController extends AdminController
 {
+    public function edit($id, Content $content)
+    {
+        return $content
+            ->header(trans('admin.edit'))
+            ->description(trans('admin.description'))
+            ->body($this->form()->edit($id));
+    }
     /**
      * Title for current resource.
      *
      * @var string
      */
-    protected $title = 'Jurnal';
+    protected $title = 'Jurnal Guru';
 
     /**
      * Make a grid builder.
@@ -34,6 +48,7 @@ class JurnalGuruController extends AdminController
     {
         $grid = new Grid(new Jurnal());
 
+
         $grid->filter(function($filter)
         {
             // Remove the default id filter
@@ -42,7 +57,7 @@ class JurnalGuruController extends AdminController
             $guru= Guru::all()->pluck('nama_guru','id');
             $filter->equal('guru_id', 'Guru')->select($guru);
 
-            $kelas= Kelas::all()->pluck('nama_kelas','id');
+            $kelas= Kelas::all()->pluck('kode','id');
             $filter->equal('kelas_id', 'Kelas')->select($kelas);
 
             $filter->scope('new', 'Recently modified')
@@ -50,40 +65,24 @@ class JurnalGuruController extends AdminController
             ->orWhere('tanggal', date('Y-m-d'));
         });
 
-        // $grid->model()->where('validasi', '=', '1');
-        // $grid->column('id',__('Id'));
+        if(!Admin::user()->isRole('administrator')){
+            $username = Admin::user()->id;
+            $guru = Guru::where('user_id','=',$username)->first();
 
+            $grid->model()->where('guru_id','=',$guru->id);
+        }
+
+        // // $grid->column('id',__('Id'));
         $grid->column('guru.nama_guru',__('Nama Guru'));
-        $grid->column('kelas.nama_kelas',__('Kelas'));
-        $grid->column('jam.nama_jam',__('Jam Ke-'));
+        $grid->column('kelas.kode',__('Kelas'));
+        // $grid->column('jam.jam_ke',__('Jam Ke-'));
+        $grid->column('jam', 'Jam Pelajaran')->display(function () {
+            return "| {$this->jam->jam_ke} | {$this->jam->waktu_awal} - {$this->jam->waktu_akhir} |";
+        });
         $grid->column('hari',__('Hari'));
         $grid->column('mapel.nama_mapel',__('Mapel'));
 
-        // $grid->column('id', 'Ijin')->display(function ($id) {
-        //     $jurnal = Jurnal::with('ijin')->find($id);
-        //     if ($jurnal && $jurnal->ijin) {
-        //         $siswaNames = $jurnal->ijin->pluck('nama_siswa')->toArray();
-        //         return implode(', ', $siswaNames);
-        //     }
-        //     return 'Tidak ada siswa';
-        // });
-
-        // $grid->column('id', 'Sakit')->display(function ($id) {
-        //     $jurnal = Jurnal::with('sakit')->find($id);
-        //     if ($jurnal && $jurnal->sakit) {
-        //         $siswaNames = $jurnal->sakit->pluck('nama_siswa')->toArray();
-        //         return implode(', ', $siswaNames);
-        //     }
-        //     return 'Tidak ada siswa';
-        // });
-        // $grid->column('id', 'Alpha')->display(function ($id) {
-        //     $jurnal = Jurnal::with('alpha')->find($id);
-        //     if ($jurnal && $jurnal->alpha) {
-        //         $siswaNames = $jurnal->alpha->pluck('nama_siswa')->toArray();
-        //         return implode(', ', $siswaNames);
-        //     }
-        //     return 'Tidak ada siswa';
-        // });
+        $grid->column('tahunajaran','Tahun Ajaran');
 
         $grid->column('edit', __('Input-Jurnal'))->display(function () {
             return "<a href='" . route('admin.jurnalguru.edit', ['jurnalguru' => $this->getKey()]) . "' class='btn btn-xs btn-success'><i class='fa fa-edit'></i> Jurnal</a>";
@@ -95,7 +94,7 @@ class JurnalGuruController extends AdminController
         $grid->disableExport();
         $grid->disableActions();
 
-                // $grid->actions(function ($actions) {
+        // $grid->actions(function ($actions) {
         //     $actions->add(new JurnalEdit());
         // });
 
@@ -115,15 +114,14 @@ class JurnalGuruController extends AdminController
         $show = new Show(Jurnal::findOrFail($id));
 
         $show->field('id',__('Id'));
-        $show->field('tanggal',__('Tgl'));
         $show->field('guru.nama_guru',__('Nama Guru'));
-        $show->field('kelas.nama_kelas',__('Kelas ID'));
-        $show->field('jam.nama_jam',__('Jam Mengajar'));
+        $show->field('kelas.kode',__('Kelas'));
+        $show->field('jam.jam_ke',__('Jam Ke-'));
         $show->field('hari',__('Hari'));
         $show->field('mapel.nama_mapel',__('Mapel'));
-        $show->field('materi',__('Materi'));
-        // $show->field('siswa.nama_siswa',__('Absen'));
+        $show->field('tahunajaran',__('Tahun Ajaran'));
 
+        // $show->field('siswa.nama_siswa',__('Absen'));
         // $show->field('validasi',__('Validasi'));
 
         return $show;
@@ -138,55 +136,29 @@ class JurnalGuruController extends AdminController
     {
         $form = new Form(new Jurnal());
 
-        $form->column(1/2, function ($form) {
+        $daftar_guru = Guru::all()->pluck('nama_guru','id');
+        $daftar_jam = Jam::all()->pluck('jam_ke','id');
+        $daftar_kelas = Kelas::all()->pluck('kode','id');
+        $daftar_mapel = Mapel::all()->pluck('nama_mapel','id');
+        $daftar_siswa = Siswa::all()->pluck('nama_siswa', 'id');
 
-            $daftar_guru = Guru::all()->pluck('nama_guru','id');
-            $daftar_jam = Jam::all()->pluck('nama_jam','id');
-            $daftar_kelas = Kelas::all()->pluck('nama_kelas','id');
-            $daftar_mapel = Mapel::all()->pluck('nama_mapel','id');
+        $form -> select('guru_id',__('Guru'))->options($daftar_guru)->readonly();
+        $form -> select('kelas_id',__('Kelas'))->options($daftar_kelas)->readonly();
+        $form -> select('jam_id',__('Jam Ke-'))->options($daftar_jam)->readonly();
+        $form -> text('hari',__('Hari'))->readonly();
+        $form -> select('mapel_id',__('Mapel'))->options($daftar_mapel)->readonly();
 
-            $form -> select('guru_id',__('Guru'))->options($daftar_guru)->readonly();
-            $form -> select('kelas_id',__('Kelas'))->options($daftar_kelas)->readonly();
-            $form -> select('jam_id',__('Jam Mengajar'))->options($daftar_jam)->readonly();
-            $form -> text('hari',__('Hari'))->readonly();
-            $form -> select('mapel_id',__('Mapel'))->options($daftar_mapel)->readonly();
-            });
+        $form->hasMany('childs', __('Jurnal'), function (Form\NestedForm $form) use ($daftar_siswa) {
 
-            $form->column(1/2, function ($form) {
-            $form -> date('tanggal',__('Tgl'));
-            $form -> textarea('materi',__('Materi'));
+            $form->date('tanggal', __('Tanggal'));
+            $form->textarea('materi', __('Materi'));
 
-            $form->multipleSelect('izin','Izin')->options(Siswa::all()->pluck('nama_siswa','id'));
-            $form->multipleSelect('sakit','Sakit')->options(Siswa::all()->pluck('nama_siswa','id'));
-            $form->multipleSelect('alpha','Alpha')->options(Siswa::all()->pluck('nama_siswa','id'));
-
-            });
-
-
-        $form->hidden('user_id',__('User ID'))->value(Admin::user()->id);
-
-
-
-        $form->footer(function ($footer) {
-
-            // disable reset btn
-            $footer->disableReset();
-
-            // disable `View` checkbox
-            $footer->disableViewCheck();
-
-            // disable `Continue editing` checkbox
-            $footer->disableEditingCheck();
-
-            // disable `Continue Creating` checkbox
-            $footer->disableCreatingCheck();
-
-            // $footer->add('<a class="btn btn-sm btn-danger"><i class="fa fa-trash"></i>&nbsp;&nbsp;Tambah</a>');
+            $form->multipleSelect('izin',__('Izin'))->options($daftar_siswa);
+            $form->multipleSelect('sakit',__('Sakit'))->options($daftar_siswa);
+            $form->multipleSelect('alpha',__('Alpha'))->options($daftar_siswa);
 
         });
 
-        // $form -> switch('validasi',__('Validasi'));
-
         return $form;
     }
-}
+ }
