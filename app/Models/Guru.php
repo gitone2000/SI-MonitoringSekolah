@@ -16,9 +16,8 @@ class Guru extends Model
     {
         return $this->belongsTo(Administrator::class,'user_id');
     }
-
-    // public function mapel()
-    // {
-    //     return $this->belongsTo(Mapel::c'lass,'mapel_id');
-    // }
+    public function mapel()
+    {
+        return $this->belongsTo(Mapel::class,'mapel_id');
+    }
 }

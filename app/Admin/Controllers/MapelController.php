@@ -15,7 +15,7 @@ class MapelController extends AdminController
      *
      * @var string
      */
-    protected $title = 'Mapel';
+    protected $title = 'Mata Pelajaran';
 
     /**
      * Make a grid builder.
@@ -26,8 +26,7 @@ class MapelController extends AdminController
     {
         $grid = new Grid(new Mapel());
 
-        // $grid->column('id',__('Id'));
-        $grid->column('nama_mapel',__('Mapel'));
+        $grid->column('nama_mapel',__('Nama Mata Pelajaran'));
         $grid->column('muatan',__('Muatan'));
         $grid->column('jurusan',__('Jurusan'));
         $grid->column('kelas',__('Kelas '));
@@ -63,7 +62,7 @@ class MapelController extends AdminController
     {
         $form = new Form(new Mapel());
 
-        $form->text('nama_mapel',__('Mapel'));
+        $form->text('nama_mapel',__('Nama Mapel'))->required();
         $form->text('muatan',__('Muatan'));
         $form->text('jurusan',__('Jurusan'));
         $form->text('kelas',__('Kelas'));

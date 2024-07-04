@@ -9,11 +9,14 @@ use App\Models\Jam;
 use App\Models\Jurnal;
 use App\Models\Kelas;
 use App\Models\Mapel;
+use App\Models\Semester;
+use Encore\Admin\Config\Config;
 use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Facades\Admin;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Show;
+use Illuminate\Support\Facades\DB;
 
 class JadwalController extends AdminController
 {
@@ -32,9 +35,9 @@ class JadwalController extends AdminController
     protected function grid()
     {
         $grid = new Grid(new Jurnal());
+
         $grid->filter(function($filter)
         {
-            // Remove the default id filter
             $filter->disableIdFilter();
 
             $guru= Guru::all()->pluck('nama_guru','id');
@@ -42,28 +45,24 @@ class JadwalController extends AdminController
 
             $kelas= Kelas::all()->pluck('kode','id');
             $filter->equal('kelas_id', 'Kelas')->select($kelas);
-
-            $filter->scope('new', 'Recently modified')
-            ->whereDate('tanggal', date('Y-m-d'))
-            ->orWhere('tanggal', date('Y-m-d'));
         });
 
-        // $grid->column('id',__('Id'));
+        $grid->model()->join('semester', 'jurnal.semester_id', '=', 'semester.id')
+        ->select('jurnal.*')
+        ->where('semester.validasi', 1);
+
         $grid->column('guru.nama_guru',__('Nama Guru'));
         $grid->column('kelas.kode',__('Kelas'));
-
-        // $grid->columns('jam.waktu_awal','jam.waktu_akhir');
-
-        $grid->column('jam', 'Jam Pelajaran')->display(function () {
+        $grid->column('jam', 'Jam Mengajar')->display(function () {
             return "| {$this->jam->jam_ke} | {$this->jam->waktu_awal} - {$this->jam->waktu_akhir} |";
         });
-
         $grid->column('hari',__('Hari'));
         $grid->column('mapel.nama_mapel',__('Mapel'));
+        $grid->column('semester.semester',__('Semester'));
 
-        $Tahunajaran = config('Tahun Ajaran');
-        $grid->model()->where('tahunajaran','=',$Tahunajaran);
-        $grid->column('tahunajaran','Tahun Ajaran');
+        // $Tahunajaran = config('Tahun Ajaran');
+        // $grid->model()->where('tahunajaran','=',$Tahunajaran);
+        // $grid->column('tahunajaran','Tahun Ajaran');
 
         return $grid;
     }
@@ -85,8 +84,7 @@ class JadwalController extends AdminController
         $show->field('jam.jam_ke',__('Jam Mengajar'));
         $show->field('hari',__('Hari'));
         $show->field('mapel.nama_mapel',__('Mapel'));
-
-        $show->field('tahunajaran',__('Tahun Ajaran'));
+        $show->field('semester.semester',__('Semester'));
 
         return $show;
     }
@@ -104,15 +102,21 @@ class JadwalController extends AdminController
         $daftar_jam = Jam::all()->pluck('jam_ke','id');
         $daftar_kelas = Kelas::all()->pluck('kode','id');
         $daftar_mapel = Mapel::all()->pluck('nama_mapel','id');
+        $daftar_semester = Semester::where('validasi','=',1)->pluck('semester','id');
 
-        $form -> select('guru_id',__('Guru'))->options($daftar_guru);
-        $form -> select('kelas_id',__('Kelas'))->options($daftar_kelas);
-        $form -> select('jam_id',__('Jam Mengajar'))->options($daftar_jam);
-        $form -> text('hari',__('Hari'));
-        $form -> select('mapel_id',__('Mapel'))->options($daftar_mapel);
-
-        $form -> text('tahunajaran','Tahun Ajaran');
+        $form -> select('guru_id',__('Guru'))->options($daftar_guru)->required();
+        $form -> select('kelas_id',__('Kelas'))->options($daftar_kelas)->required();
+        $form -> select('jam_id',__('Jam Mengajar'))->options($daftar_jam)->required();
+        $form->select('hari',__('Hari'))
+            ->options(['Senin' => 'Senin', "Selasa" => 'Selasa', 'Rabu' => 'Rabu', 'Kamis' => 'Kamis', 'Jumat' => 'Jumat'])->required();
+        $form -> select('mapel_id',__('Mapel'))->options($daftar_mapel)->required();
+        $form -> select('semester_id',__('Semester'))->options($daftar_semester)->required();
         $form -> hidden('user_id',__('User ID'))->value(Admin::user()->id);
+
+           // $Tahunajaran = config('value');
+        // // $ajaran= Config::load()->pluck('value','id');
+        // $form -> select('tahunajaran',__('Tahun Ajaran'))->options($Tahunajaran);
+        // // $form -> text('tahunajaran','Tahun Ajaran');
 
         return $form;
     }

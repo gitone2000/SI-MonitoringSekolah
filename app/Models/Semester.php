@@ -5,16 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Kelas extends Model
+class Semester extends Model
 {
     use HasFactory;
-
-    protected $table = "kelas";
+    protected $table = "semester";
 
     public $timestamps = false;
 
     public function jurnal()
     {
-        return $this->hasMany(Jurnal::class,'kelas_id');
+        return $this->hasMany(Jurnal::class);
     }
 }

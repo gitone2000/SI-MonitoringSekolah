@@ -50,30 +50,10 @@ class Jurnal extends Model
     {
         return $this->belongsTo(Administrator::class,'user_id');
     }
-
-    // public function getIzinAttribute()
-    // {
-    //     return $this->getSiswaNames($this->childs->pluck('izin')->flatten()->toArray());
-    // }
-
-    // public function getSakitAttribute()
-    // {
-    //     return $this->getSiswaNames($this->childs->pluck('sakit')->flatten()->toArray());
-    // }
-
-    // public function getAlphaAttribute()
-    // {
-    //     return $this->getSiswaNames($this->childs->pluck('alpha')->flatten()->toArray());
-    // }
-
-    // private function getSiswaNames($ids)
-    // {
-    //     if (!empty($ids)) {
-    //         $names = Siswa::whereIn('id', $ids)->pluck('nama_siswa')->toArray();
-    //         return implode(', ', $names);
-    //     }
-    //     return '';
-    // }
+    public function semester()
+    {
+        return $this->belongsTo(Semester::class,'semester_id');
+    }
 
     // public function izin()
     // {

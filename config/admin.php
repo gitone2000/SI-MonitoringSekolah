@@ -21,7 +21,7 @@ return [
     | `img` tag, eg '<img src="http://logo-url" alt="Admin logo">'.
     |
     */
-    'logo' => '<b>Monitoring</b> Menu',
+    'logo' => '<b>Monitoring</b> Main',
 
     /*
     |--------------------------------------------------------------------------

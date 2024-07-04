@@ -30,15 +30,12 @@ class GuruController extends AdminController
     {
         $grid = new Grid(new Guru());
 
-        // $grid->column('id',__('Id'));
         $grid->column('nip',__('NIP'));
         $grid->column('nama_guru',__('Nama'));
         $grid->column('gol_ruang',__('Gol/Ruang'));
-        $grid->column('mata_pelajaran',__('Mapel'));
-        $grid->column('no_tlp',__('No Telepon'));
+        $grid->column('jabatan',__('Jabatan'));
+        $grid->column('mapel.nama_mapel',__('Mapel'));;
         $grid->column('gender',__('Jenis Kelamin'));
-
-        // $grid->column('mapel.nama_mapel',__('Mapel Diajar'));
 
         return $grid;
     }
@@ -57,13 +54,9 @@ class GuruController extends AdminController
         $show->field('nip',__('NIP'));
         $show->field('nama_guru',__('Nama'));
         $show->field('gol_ruang',__('Gol/Ruang'));
-        $show->field('mata_pelajaran',__('Mapel'));
-        $show->field('no_tlp',__('NO Telepon'));
+        $show->field('jabatan',__('Jabatan'));
+        $show->field('mapel.nama_mapel',__('Mapel'));
         $show->field('gender',__('Jenis Kelamin'));
-
-
-        // $show->field('mapel_id',__('Mapel Diajar'));
-
 
         return $show;
     }
@@ -80,16 +73,14 @@ class GuruController extends AdminController
         $daftar_mapel = Mapel::all()->pluck('nama_mapel','id');
 
         $form->text('nip',__('NIP'));
-        $form->text('nama_guru',__('Nama'));
+        $form->text('nama_guru',__('Nama'))->required();
         $form->text('gol_ruang',__('Gol/Ruang'));
-        $form->text('mata_pelajaran',__('Mapel'));
-        $form->text('no_tlp',__('NO Telepon'));
-        $form->text('gender',__('Jenis Kelamin'));
-
+        $form->text('jabatan',__('Jabatan'));
+        $form->select('mapel_id',__('Mapel'))->options($daftar_mapel)->required();
+        $form->radio('gender',__('Jenis Kelamin'))
+            ->options(['L' => 'Laki-laki', "P" => 'Perempuan'])->required();
         $users = Administrator::all()->pluck('name','id');
-        $form->select('user_id',__('User'))->options($users);
-
-        // $form->select('mapel_id',__('Mapel'))->options($daftar_mapel);
+        $form->select('user_id',__('User'))->options($users)->required();
 
         return $form;
     }

@@ -27,7 +27,6 @@ class SiswaController extends AdminController
     {
         $grid = new Grid(new Siswa());
 
-        // $grid->column('id',__('Id'));
         $grid->column('nis',__('NIS'));
         $grid->column('nama_siswa',__('Nama'));
         $grid->column('kelas.kode',__('Kelas'));
@@ -66,10 +65,11 @@ class SiswaController extends AdminController
 
         $daftar_kelas = Kelas::all()->pluck('kode','id');
 
-        $form->text('nis',__('NIS'));
-        $form->text('nama_siswa',__('Nama'));
-        $form -> select('kelas_id',__('Kelas'))->options($daftar_kelas);
-        $form->text('gender',__('Jenis Kelamin'));
+        $form->text('nis',__('NIS'))->required();
+        $form->text('nama_siswa',__('Nama'))->required();
+        $form -> select('kelas_id',__('Kelas'))->options($daftar_kelas)->required();
+        $form->radio('gender',__('Jenis Kelamin'))
+            ->options(['L' => 'Laki-laki', "P" => 'Perempuan'])->required();
 
         return $form;
     }

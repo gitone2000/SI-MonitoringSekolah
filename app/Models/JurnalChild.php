@@ -25,29 +25,6 @@ class JurnalChild extends Model
     {
         return $this->belongsTo(Jurnal::class, 'jurnal_id');
     }
-    // public function getIzinAttribute($value)
-    // {
-    //     return $this->convertSiswaNames($value);
-    // }
-
-    // public function getSakitAttribute($value)
-    // {
-    //     return $this->convertSiswaNames($value);
-    // }
-
-    // public function getAlphaAttribute($value)
-    // {
-    //     return $this->convertSiswaNames($value);
-    // }
-
-    // private function convertSiswaNames($ids)
-    // {
-    //     if (is_array($ids)) {
-    //         $names = Siswa::whereIn('id', $ids)->pluck('nama_siswa')->toArray();
-    //         return implode(', ', $names);
-    //     }
-    //     return $ids;
-    // }
 }
     // public function izin()
     // {

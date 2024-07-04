@@ -26,7 +26,6 @@ class KelasController extends AdminController
     {
         $grid = new Grid(new Kelas());
 
-        // $grid->column('id', __('Id'));
         $grid->column('kode', __('Kode'));
         $grid->column('kelas', __('Kelas'));
         $grid->column('keterangan_kelas', __('Keterangan Kelas'));
@@ -63,7 +62,7 @@ class KelasController extends AdminController
     {
         $form = new Form(new Kelas());
 
-        $form->text('kode', __('Kode'));
+        $form->text('kode', __('Kode'))->required();
         $form->text('kelas', __('Kelas'));
         $form->text('keterangan_kelas', __('Keterangan Kelas'));
         $form->text('jurusan', __('Jurusan'));
