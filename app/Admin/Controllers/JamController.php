@@ -26,6 +26,19 @@ class JamController extends AdminController
     {
         $grid = new Grid(new Jam());
 
+        $grid->filter(function ($filter) {
+
+            $filter->disableIdFilter();
+
+            $filter->where(function ($query) {
+
+                $query->where('jam_ke', 'like', "%{$this->input}%")
+                    ->orWhere('waktu_awal', 'like', "%{$this->input}%")
+                    ->orWhere('waktu_akhir', 'like', "%{$this->input}%");
+
+            }, 'Search');
+        });
+
         $grid->column('jam_ke',__('Jam Ke-'));
         $grid->column('waktu_awal',__('Waktu Awal'));
         $grid->column('waktu_akhir',__('Waktu Akhir'));

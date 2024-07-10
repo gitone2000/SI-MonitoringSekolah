@@ -107,8 +107,10 @@ class JadwalController extends AdminController
         $form -> select('guru_id',__('Guru'))->options($daftar_guru)->required();
         $form -> select('kelas_id',__('Kelas'))->options($daftar_kelas)->required();
         $form -> select('jam_id',__('Jam Mengajar'))->options($daftar_jam)->required();
+
         $form->select('hari',__('Hari'))
             ->options(['Senin' => 'Senin', "Selasa" => 'Selasa', 'Rabu' => 'Rabu', 'Kamis' => 'Kamis', 'Jumat' => 'Jumat'])->required();
+            
         $form -> select('mapel_id',__('Mapel'))->options($daftar_mapel)->required();
         $form -> select('semester_id',__('Semester'))->options($daftar_semester)->required();
         $form -> hidden('user_id',__('User ID'))->value(Admin::user()->id);

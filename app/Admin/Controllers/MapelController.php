@@ -3,6 +3,7 @@
 namespace App\Admin\Controllers;
 
 use App\Models\Mapel;
+use App\Models\Muatan;
 use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
@@ -26,10 +27,22 @@ class MapelController extends AdminController
     {
         $grid = new Grid(new Mapel());
 
+        $grid->filter(function ($filter) {
+
+            $filter->disableIdFilter();
+
+            $filter->where(function ($query) {
+
+                $query->where('nama_mapel', 'like', "%{$this->input}%")
+                      ->orWhereHas('muatan', function ($query) {
+                        $query->where('nama_muatan', 'like', "%{$this->input}%");
+                });
+
+            }, 'Search');
+        });
+
         $grid->column('nama_mapel',__('Nama Mata Pelajaran'));
-        $grid->column('muatan',__('Muatan'));
-        $grid->column('jurusan',__('Jurusan'));
-        $grid->column('kelas',__('Kelas '));
+        $grid->column('muatan.nama_muatan',__('Muatan'));
 
         return $grid;
     }
@@ -46,9 +59,7 @@ class MapelController extends AdminController
 
         $show->field('id',__('Id'));
         $show->field('nama_mapel',__('Mapel'));
-        $show->field('muatan',__('Muatan'));
-        $show->field('jurusan',__('Jurusan'));
-        $show->field('kelas',__('Kelas'));
+        $show->field('muatan_id',__('Muatan'));
 
         return $show;
     }
@@ -62,10 +73,10 @@ class MapelController extends AdminController
     {
         $form = new Form(new Mapel());
 
+        $daftar_muatan = Muatan::all()->pluck('nama_muatan','id');
+
         $form->text('nama_mapel',__('Nama Mapel'))->required();
-        $form->text('muatan',__('Muatan'));
-        $form->text('jurusan',__('Jurusan'));
-        $form->text('kelas',__('Kelas'));
+        $form->select('muatan_id',__('Muatan'))->options($daftar_muatan)->required();
 
         return $form;
     }

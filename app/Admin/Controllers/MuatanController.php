@@ -2,20 +2,20 @@
 
 namespace App\Admin\Controllers;
 
-use App\Models\Semester;
+use App\Models\Muatan;
 use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Show;
 
-class SemesterController extends AdminController
+class MuatanController extends AdminController
 {
     /**
      * Title for current resource.
      *
      * @var string
      */
-    protected $title = 'Semester';
+    protected $title = 'Muatan';
 
     /**
      * Make a grid builder.
@@ -24,7 +24,7 @@ class SemesterController extends AdminController
      */
     protected function grid()
     {
-        $grid = new Grid(new Semester());
+        $grid = new Grid(new Muatan());
 
         $grid->filter(function ($filter) {
 
@@ -32,19 +32,12 @@ class SemesterController extends AdminController
 
             $filter->where(function ($query) {
 
-                $query->where('semester', 'like', "%{$this->input}%");
+                $query->where('nama_muatan', 'like', "%{$this->input}%");
 
             }, 'Search');
         });
 
-        $grid -> column('semester',__('Semester'));
-
-        $states = [
-                'on' => ['value' => 1, 'text' => 'Ya', 'color' => 'primary'],
-                'off' => ['value' => 0, 'text' => 'Tidak', 'color' => 'danger'],
-            ];
-        $grid -> column('validasi','Status')->switch($states);
-
+        $grid->column('nama_muatan', __('Nama Muatan'));
 
         return $grid;
     }
@@ -57,10 +50,9 @@ class SemesterController extends AdminController
      */
     protected function detail($id)
     {
-        $show = new Show(Semester::findOrFail($id));
+        $show = new Show(Muatan::findOrFail($id));
 
-        $show -> field('id',__('ID'));
-        $show -> field('semester',__('Semester'));
+        $show->field('nama_muatan', __('Nama Muatan'));
 
         return $show;
     }
@@ -72,11 +64,9 @@ class SemesterController extends AdminController
      */
     protected function form()
     {
-        $form = new Form(new Semester());
+        $form = new Form(new Muatan());
 
-        $form -> text('semester',__('Semester'))->required();
-        $form -> hidden('validasi',__('Validasi'));
-
+        $form->text('nama_muatan', __('Nama Muatan'))->required();
 
         return $form;
     }

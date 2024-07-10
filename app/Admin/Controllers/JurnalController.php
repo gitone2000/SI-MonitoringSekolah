@@ -35,6 +35,7 @@ class JurnalController extends AdminController
     {
         $grid = new Grid(new Jurnal());
 
+
         $grid->filter(function($filter)
         {
             $filter->disableIdFilter();

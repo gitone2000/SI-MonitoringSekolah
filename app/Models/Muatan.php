@@ -5,14 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Mapel extends Model
+class Muatan extends Model
 {
     use HasFactory;
-    protected $table = "mapel";
-
+    protected $table = "muatan";
     public $timestamps = false;
-    public function muatan()
-    {
-        return $this->belongsTo(Muatan::class,'muatan_id');
-    }
 }

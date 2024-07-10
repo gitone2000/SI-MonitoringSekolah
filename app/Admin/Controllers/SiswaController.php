@@ -27,6 +27,22 @@ class SiswaController extends AdminController
     {
         $grid = new Grid(new Siswa());
 
+        $grid->filter(function ($filter) {
+
+            $filter->disableIdFilter();
+
+            $filter->where(function ($query) {
+
+                $query->where('nis', 'like', "%{$this->input}%")
+                      ->orWhere('nama_siswa', 'like', "%{$this->input}%")
+                      ->orWhere('gender', 'like', "%{$this->input}%")
+                      ->orWhereHas('kelas', function ($query) {
+                        $query->where('kode', 'like', "%{$this->input}%");
+                });
+
+            }, 'Search');
+        });
+
         $grid->column('nis',__('NIS'));
         $grid->column('nama_siswa',__('Nama'));
         $grid->column('kelas.kode',__('Kelas'));

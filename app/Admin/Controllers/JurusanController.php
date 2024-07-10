@@ -2,20 +2,20 @@
 
 namespace App\Admin\Controllers;
 
-use App\Models\Semester;
+use App\Models\Jurusan;
 use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Show;
 
-class SemesterController extends AdminController
+class JurusanController extends AdminController
 {
     /**
      * Title for current resource.
      *
      * @var string
      */
-    protected $title = 'Semester';
+    protected $title = 'Jurusan';
 
     /**
      * Make a grid builder.
@@ -24,7 +24,7 @@ class SemesterController extends AdminController
      */
     protected function grid()
     {
-        $grid = new Grid(new Semester());
+        $grid = new Grid(new Jurusan());
 
         $grid->filter(function ($filter) {
 
@@ -32,19 +32,14 @@ class SemesterController extends AdminController
 
             $filter->where(function ($query) {
 
-                $query->where('semester', 'like', "%{$this->input}%");
+                $query->where('nama_jurusan', 'like', "%{$this->input}%")
+                      ->orWhere('kode_jurusan', 'like', "%{$this->input}%");
 
             }, 'Search');
         });
 
-        $grid -> column('semester',__('Semester'));
-
-        $states = [
-                'on' => ['value' => 1, 'text' => 'Ya', 'color' => 'primary'],
-                'off' => ['value' => 0, 'text' => 'Tidak', 'color' => 'danger'],
-            ];
-        $grid -> column('validasi','Status')->switch($states);
-
+        $grid->column('nama_jurusan', __('Nama Jurusan'));
+        $grid->column('kode_jurusan', __('Kode Jurusan'));
 
         return $grid;
     }
@@ -57,10 +52,10 @@ class SemesterController extends AdminController
      */
     protected function detail($id)
     {
-        $show = new Show(Semester::findOrFail($id));
+        $show = new Show(Jurusan::findOrFail($id));
 
-        $show -> field('id',__('ID'));
-        $show -> field('semester',__('Semester'));
+        $show->field('nama_jurusan', __('Nama Jurusan'));
+        $show->field('kode_jurusan', __('Kode Jurusan'));
 
         return $show;
     }
@@ -72,11 +67,10 @@ class SemesterController extends AdminController
      */
     protected function form()
     {
-        $form = new Form(new Semester());
+        $form = new Form(new Jurusan());
 
-        $form -> text('semester',__('Semester'))->required();
-        $form -> hidden('validasi',__('Validasi'));
-
+        $form->text('nama_jurusan', __('Nama Jurusan'))->required();
+        $form->text('kode_jurusan', __('Kode Jurusan'))->required();
 
         return $form;
     }

@@ -2,20 +2,20 @@
 
 namespace App\Admin\Controllers;
 
-use App\Models\Semester;
+use App\Models\Tugas;
 use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Show;
 
-class SemesterController extends AdminController
+class TugasController extends AdminController
 {
     /**
      * Title for current resource.
      *
      * @var string
      */
-    protected $title = 'Semester';
+    protected $title = 'Tugas Tambahan';
 
     /**
      * Make a grid builder.
@@ -24,7 +24,7 @@ class SemesterController extends AdminController
      */
     protected function grid()
     {
-        $grid = new Grid(new Semester());
+        $grid = new Grid(new Tugas());
 
         $grid->filter(function ($filter) {
 
@@ -32,19 +32,12 @@ class SemesterController extends AdminController
 
             $filter->where(function ($query) {
 
-                $query->where('semester', 'like', "%{$this->input}%");
+                $query->where('nama_tugas', 'like', "%{$this->input}%");
 
             }, 'Search');
         });
 
-        $grid -> column('semester',__('Semester'));
-
-        $states = [
-                'on' => ['value' => 1, 'text' => 'Ya', 'color' => 'primary'],
-                'off' => ['value' => 0, 'text' => 'Tidak', 'color' => 'danger'],
-            ];
-        $grid -> column('validasi','Status')->switch($states);
-
+        $grid->column('nama_tugas', __('Nama Tugas Tambahan'));
 
         return $grid;
     }
@@ -57,10 +50,10 @@ class SemesterController extends AdminController
      */
     protected function detail($id)
     {
-        $show = new Show(Semester::findOrFail($id));
+        $show = new Show(Tugas::findOrFail($id));
 
-        $show -> field('id',__('ID'));
-        $show -> field('semester',__('Semester'));
+        $show->field('id', __('ID'));
+        $show->field('nama_tugas', __('Nama Tugas Tambahan'));
 
         return $show;
     }
@@ -72,11 +65,9 @@ class SemesterController extends AdminController
      */
     protected function form()
     {
-        $form = new Form(new Semester());
+        $form = new Form(new Tugas());
 
-        $form -> text('semester',__('Semester'))->required();
-        $form -> hidden('validasi',__('Validasi'));
-
+        $form->text('nama_tugas', __('Nama Tugas Tambahan'))->required();
 
         return $form;
     }
