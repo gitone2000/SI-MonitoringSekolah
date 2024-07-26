@@ -75,14 +75,27 @@ class JurnalGuruController extends AdminController
 
         $grid->column('guru.nama_guru',__('Nama Guru'));
         $grid->column('kelas.kode',__('Kelas'));
-        $grid->column('jam', 'Jam Mengajar')->display(function () {
-            return "| {$this->jam->jam_ke} | {$this->jam->waktu_awal} - {$this->jam->waktu_akhir} |";
+
+        $grid->column('jam_mulai_id', __('Jam Ke-'))->display(function () {
+            return $this->jam_mulai_id . ' - ' . $this->jam_akhir_id;
         });
+
+        $grid->column('jam_akhir_id', __('Jam Mengajar'))->display(function () {
+            $jamMulai = Jam::find($this->jam_mulai_id);
+            $jamAkhir = Jam::find($this->jam_akhir_id);
+
+            if ($jamMulai && $jamAkhir) {
+                return $jamMulai->waktu_awal . ' - ' . $jamAkhir->waktu_akhir;
+            }
+
+            return '-';
+        });
+
         $grid->column('hari',__('Hari'));
         $grid->column('mapel.nama_mapel',__('Mapel'));
         $grid->column('semester.semester',__('Semester'));
 
-        $grid->column('edit', __('Input-Jurnal'))->display(function () {
+        $grid->column('edit', __('Isi Jurnal'))->display(function () {
             return "<a href='" . route('admin.jurnalguru.edit', ['jurnalguru' => $this->getKey()]) . "' class='btn btn-xs btn-success'><i class='fa fa-edit'></i> Jurnal</a>";
         });
 
@@ -111,7 +124,8 @@ class JurnalGuruController extends AdminController
         $show->field('id',__('Id'));
         $show->field('guru.nama_guru',__('Nama Guru'));
         $show->field('kelas.kode',__('Kelas'));
-        $show->field('jam.jam_ke',__('Jam Mengajar'));
+        $show->field('jam_mulai_id',__('Jam Mulai'));
+        $show->field('jam_akhir_id',__('Jam Akhir'));
         $show->field('hari',__('Hari'));
         $show->field('mapel.nama_mapel',__('Mapel'));
         $show->field('semester.semester',__('Semester'));
@@ -133,7 +147,8 @@ class JurnalGuruController extends AdminController
         // dd($id_kelas);
 
         $daftar_guru = Guru::all()->pluck('nama_guru','id');
-        $daftar_jam = Jam::all()->pluck('jam_ke','id');
+        $daftar_jam_awal = Jam::selectRaw("id, CONCAT(jam_ke, ' - ', waktu_awal) as jam_awal")->pluck('jam_awal', 'id');
+        $daftar_jam_akhir = Jam::selectRaw("id, CONCAT(jam_ke, ' - ', waktu_akhir) as jam_akhir")->pluck('jam_akhir', 'id');
         $daftar_kelas = Kelas::all()->pluck('kode','id');
         $daftar_mapel = Mapel::all()->pluck('nama_mapel','id');
 
@@ -153,7 +168,8 @@ class JurnalGuruController extends AdminController
 
         $form -> select('guru_id',__('Guru'))->options($daftar_guru)->readonly();
         $form -> select('kelas_id',__('Kelas'))->options($daftar_kelas)->readonly();
-        $form -> select('jam_id',__('Jam Mengajar'))->options($daftar_jam)->readonly();
+        $form -> select('jam_mulai_id',__('Jam Mulai'))->options($daftar_jam_awal)->readonly();
+        $form -> select('jam_akhir_id',__('Jam Akhir'))->options($daftar_jam_akhir)->readonly();
         $form -> text('hari',__('Hari'))->readonly();
         $form -> select('mapel_id',__('Mapel'))->options($daftar_mapel)->readonly();
         $form -> text('semester.semester',__('Semester'))->options($daftar_semester)->readonly();
@@ -161,12 +177,12 @@ class JurnalGuruController extends AdminController
         $form->hasMany('childs', __('Jurnal'), function (Form\NestedForm $form) use ($jurnal_siswa) {
 
             $form->date('tanggal', __('Tanggal'))->required();
+            $form->text('kompetensi', __('Dasar Kompetensi'))->required();
             $form->textarea('materi', __('Materi'))->required();
 
             $form->multipleSelect('izin',__('Izin'))->options($jurnal_siswa);
             $form->multipleSelect('sakit',__('Sakit'))->options($jurnal_siswa);
             $form->multipleSelect('alpha',__('Alpha'))->options($jurnal_siswa);
-
         });
 
         $form -> disableViewCheck();

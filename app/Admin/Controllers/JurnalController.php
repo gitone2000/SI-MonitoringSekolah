@@ -58,7 +58,7 @@ class JurnalController extends AdminController
             $grid->model()->where('guru_id','=',$guru->id);
         }
 
-        $grid->model()->select('jurnal.*', 'jurnalchild.tanggal', 'jurnalchild.materi', 'jurnalchild.izin', 'jurnalchild.sakit', 'jurnalchild.alpha',)
+        $grid->model()->select('jurnal.*', 'jurnalchild.tanggal', 'jurnalchild.kompetensi', 'jurnalchild.materi', 'jurnalchild.izin', 'jurnalchild.sakit', 'jurnalchild.alpha',)
                       ->leftJoin('jurnalchild', 'jurnal.id', '=', 'jurnalchild.jurnal_id');
         $grid->model()->join('semester','jurnal.semester_id','=','semester.id')->where('semester.validasi','=',1);
         $grid->model()->whereNotNull('jurnalchild.tanggal');
@@ -67,11 +67,25 @@ class JurnalController extends AdminController
         $grid->column('tanggal',__('Tgl'));
         $grid->column('guru.nama_guru',__('Nama Guru'));
         $grid->column('kelas.kode',__('Kelas'));
-        $grid->column('jam', 'Jam Mengajar')->display(function () {
-            return "| {$this->jam->jam_ke} | {$this->jam->waktu_awal} - {$this->jam->waktu_akhir} |";
+
+        $grid->column('jam_mulai_id', __('Jam Ke-'))->display(function () {
+            return $this->jam_mulai_id . ' - ' . $this->jam_akhir_id;
         });
+
+        $grid->column('jam_akhir_id', __('Jam Mengajar'))->display(function () {
+            $jamMulai = Jam::find($this->jam_mulai_id);
+            $jamAkhir = Jam::find($this->jam_akhir_id);
+
+            if ($jamMulai && $jamAkhir) {
+                return $jamMulai->waktu_awal . ' - ' . $jamAkhir->waktu_akhir;
+            }
+
+            return '-';
+        });
+
         $grid->column('hari',__('Hari'));
         $grid->column('mapel.nama_mapel',__('Mapel'));
+        $grid->column('kompetensi',__('Dasar Kompetensi'));
         $grid->column('materi',__('Materi'));
 
         $grid->column('izin', 'Izin')->display(function ($izin) {
@@ -125,9 +139,11 @@ class JurnalController extends AdminController
         $show -> field('tanggal',__('Tgl'));
         $show -> field('guru.nama_guru',__('Nama Guru'));
         $show -> field('kelas.kode',__('Kelas'));
-        $show -> field('jam.jam_ke',__('Jam Mengajar'));
+        $show -> field('jam_mulai_id',__('Jam Mulai'));
+        $show -> field('jam_akhir_id',__('Jam Akhir'));
         $show -> field('hari',__('Hari'));
         $show -> field('mapel.nama_mapel',__('Mapel'));
+        $show -> field('kompetensi',__('Dasar Kompetensi'));
         $show -> field('materi',__('Materi'));
         $show -> field('admin.name',__('Inputer'));
 

@@ -17,7 +17,7 @@ class JurnalChild extends Model
     ];
 
     protected $fillable = [
-        'jurnal_id','tanggal', 'materi', 'izin', 'sakit', 'alpha'
+        'jurnal_id', 'tanggal', 'kompetensi' ,'materi', 'izin', 'sakit', 'alpha'
     ];
     public $timestamps = false;
 

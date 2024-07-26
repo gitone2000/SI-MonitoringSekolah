@@ -53,9 +53,25 @@ class JadwalController extends AdminController
 
         $grid->column('guru.nama_guru',__('Nama Guru'));
         $grid->column('kelas.kode',__('Kelas'));
-        $grid->column('jam', 'Jam Mengajar')->display(function () {
-            return "| {$this->jam->jam_ke} | {$this->jam->waktu_awal} - {$this->jam->waktu_akhir} |";
+        
+        // $grid->column('jam', 'Jam Mengajar')->display(function () {
+        //     return "| {$this->jam->jam_ke} | {$this->jam->waktu_awal} - {$this->jam->waktu_akhir} |";
+        // });
+        $grid->column('jam_mulai_id', __('Jam Ke-'))->display(function () {
+            return $this->jam_mulai_id . ' - ' . $this->jam_akhir_id;
         });
+
+        $grid->column('jam_akhir_id', __('Jam Mengajar'))->display(function () {
+            $jamMulai = Jam::find($this->jam_mulai_id);
+            $jamAkhir = Jam::find($this->jam_akhir_id);
+
+            if ($jamMulai && $jamAkhir) {
+                return $jamMulai->waktu_awal . ' - ' . $jamAkhir->waktu_akhir;
+            }
+
+            return '-';
+        });
+
         $grid->column('hari',__('Hari'));
         $grid->column('mapel.nama_mapel',__('Mapel'));
         $grid->column('semester.semester',__('Semester'));
@@ -81,7 +97,11 @@ class JadwalController extends AdminController
         $show->field('id',__('Id'));
         $show->field('guru.nama_guru',__('Nama Guru'));
         $show->field('kelas.kode',__('Kelas'));
-        $show->field('jam.jam_ke',__('Jam Mengajar'));
+
+        // $show -> field('jam.jam_ke',__('Jam Mengajar'));
+        $show->field('jam_mulai_id',__('Jam Mulai'));
+        $show->field('jam_akhir_id',__('Jam Akhir'));
+
         $show->field('hari',__('Hari'));
         $show->field('mapel.nama_mapel',__('Mapel'));
         $show->field('semester.semester',__('Semester'));
@@ -100,17 +120,24 @@ class JadwalController extends AdminController
 
         $daftar_guru = Guru::all()->pluck('nama_guru','id');
         $daftar_jam = Jam::all()->pluck('jam_ke','id');
+
+        $daftar_jam_awal = Jam::selectRaw("id, CONCAT(jam_ke, ' - ', waktu_awal) as jam_awal")->pluck('jam_awal', 'id');
+        $daftar_jam_akhir = Jam::selectRaw("id, CONCAT(jam_ke, ' - ', waktu_akhir) as jam_akhir")->pluck('jam_akhir', 'id');
+
         $daftar_kelas = Kelas::all()->pluck('kode','id');
         $daftar_mapel = Mapel::all()->pluck('nama_mapel','id');
         $daftar_semester = Semester::where('validasi','=',1)->pluck('semester','id');
 
         $form -> select('guru_id',__('Guru'))->options($daftar_guru)->required();
         $form -> select('kelas_id',__('Kelas'))->options($daftar_kelas)->required();
-        $form -> select('jam_id',__('Jam Mengajar'))->options($daftar_jam)->required();
+
+        // $form -> select('jam_id',__('Jam Mengajar'))->options($daftar_jam)->readonly();
+        $form -> select('jam_mulai_id',__('Jam Mulai'))->options($daftar_jam_awal)->required();
+        $form -> select('jam_akhir_id',__('Jam Akhir'))->options($daftar_jam_akhir)->required();
 
         $form->select('hari',__('Hari'))
             ->options(['Senin' => 'Senin', "Selasa" => 'Selasa', 'Rabu' => 'Rabu', 'Kamis' => 'Kamis', 'Jumat' => 'Jumat'])->required();
-            
+
         $form -> select('mapel_id',__('Mapel'))->options($daftar_mapel)->required();
         $form -> select('semester_id',__('Semester'))->options($daftar_semester)->required();
         $form -> hidden('user_id',__('User ID'))->value(Admin::user()->id);

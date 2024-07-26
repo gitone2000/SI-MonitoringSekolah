@@ -70,9 +70,6 @@
           <a class="nav-link" href="https://smknbandar.sch.id/" target="_blank">Tentang</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Kontak</a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link" href="/admin">Login</a>
         </li>
       </ul>

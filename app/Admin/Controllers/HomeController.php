@@ -25,11 +25,17 @@ class HomeController extends Controller
         $jumlah_jam = Jam::count();
 
 
-        $infoguru = new InfoBox('Jumlah Guru', 'guru', 'blue', '/admin/guru', $jumlah_guru);
-        $infokelas = new Infobox('Jumlah Kelas', 'kelas', 'yellow', '/admin/kelas', $jumlah_kelas);
-        $infosiswa = new Infobox('Jumlah Siswa', 'siswa', 'red', '/admin/siswa', $jumlah_siswa);
-        $infomapel = new Infobox('Jumlah Mapel', 'mapel', 'blue', '/admin/mapel', $jumlah_mapel);
-        $infojam = new Infobox('Jumlah Jam Mengajar', 'jam', 'green', '/admin/jam', $jumlah_jam);
+        $infoguru = new InfoBox('Jumlah Guru', 'guru', 'blue', '', $jumlah_guru);
+        $infokelas = new Infobox('Jumlah Kelas', 'kelas', 'yellow', '', $jumlah_kelas);
+        $infosiswa = new Infobox('Jumlah Siswa', 'siswa', 'red', '', $jumlah_siswa);
+        $infomapel = new Infobox('Jumlah Mapel', 'mapel', 'blue', '', $jumlah_mapel);
+        $infojam = new Infobox('Jumlah Jam Mengajar', 'jam', 'green', '', $jumlah_jam);
+
+        // $infoguru = new InfoBox('Jumlah Guru', 'guru', 'blue', '/admin/guru', $jumlah_guru);
+        // $infokelas = new Infobox('Jumlah Kelas', 'kelas', 'yellow', '/admin/kelas', $jumlah_kelas);
+        // $infosiswa = new Infobox('Jumlah Siswa', 'siswa', 'red', '/admin/siswa', $jumlah_siswa);
+        // $infomapel = new Infobox('Jumlah Mapel', 'mapel', 'blue', '/admin/mapel', $jumlah_mapel);
+        // $infojam = new Infobox('Jumlah Jam Mengajar', 'jam', 'green', '/admin/jam', $jumlah_jam);
 
 
         return $content
