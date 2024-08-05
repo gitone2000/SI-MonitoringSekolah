@@ -84,7 +84,7 @@
   <div class="row">
 
     <div class="col-1 mx-3 mb-3 animate__animated animate__fadeInLeft">
-        <img src="/vendor/laravel-admin/AdminLTE/dist/img/Logo SMK Bandar.png" alt="Logo" style="max-width: 100px; height: auto;">
+        <img src="/vendor/laravel-admin/AdminLTE/dist/img/Logo-SMKNBANDAR.png" alt="Logo" style="max-width: 100px; height: auto;">
       </div>
 
     <div class="col-lg-7 mb-4 animate__animated animate__backInUp">
