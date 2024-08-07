@@ -18,4 +18,7 @@
  *
  */
 
+use Encore\Admin\Facades\Admin;
+
 Encore\Admin\Form::forget(['map', 'editor']);
+Admin::favicon('/vendor/laravel-admin/AdminLTE/dist/img/Logo-SMKNBANDAR.png');

@@ -51,6 +51,8 @@
         }
 
     </style>
+    <title>Monitoring KBM</title>
+    <link rel="website icon" type="png" href="/vendor/laravel-admin/AdminLTE/dist/img/Logo-SMKNBANDAR.png">
 </head>
 <body>
 
