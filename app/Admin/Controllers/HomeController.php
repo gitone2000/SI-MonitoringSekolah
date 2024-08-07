@@ -5,6 +5,7 @@ namespace App\Admin\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Guru;
 use App\Models\Jam;
+use App\Models\Jurusan;
 use App\Models\Kelas;
 use App\Models\Mapel;
 use App\Models\Siswa;
@@ -23,13 +24,15 @@ class HomeController extends Controller
         $jumlah_siswa = Siswa::count();
         $jumlah_mapel = Mapel::count();
         $jumlah_jam = Jam::count();
+        $jumlah_jurusan = Jurusan::count();
 
 
         $infoguru = new InfoBox('Jumlah Guru', 'guru', 'blue', '', $jumlah_guru);
         $infokelas = new Infobox('Jumlah Kelas', 'kelas', 'yellow', '', $jumlah_kelas);
         $infosiswa = new Infobox('Jumlah Siswa', 'siswa', 'red', '', $jumlah_siswa);
-        $infomapel = new Infobox('Jumlah Mapel', 'mapel', 'blue', '', $jumlah_mapel);
+        $infomapel = new Infobox('Jumlah Mapel', 'mapel', 'purple', '', $jumlah_mapel);
         $infojam = new Infobox('Jumlah Jam Mengajar', 'jam', 'green', '', $jumlah_jam);
+        $infojurusan = new Infobox('Jumlah Jurusan', 'jurusan', 'orange', '', $jumlah_jurusan);
 
         // $infoguru = new InfoBox('Jumlah Guru', 'guru', 'blue', '/admin/guru', $jumlah_guru);
         // $infokelas = new Infobox('Jumlah Kelas', 'kelas', 'yellow', '/admin/kelas', $jumlah_kelas);
@@ -42,7 +45,7 @@ class HomeController extends Controller
             ->title('Dashboard')
             ->description('Information')
 
-            ->row(function (Row $row) use ($infoguru,$infokelas,$infosiswa,$infomapel,$infojam) {
+            ->row(function (Row $row) use ($infoguru,$infokelas,$infosiswa,$infomapel,$infojam,$infojurusan) {
 
                 $row -> column(3, function(Column $column) use($infoguru) {
                     $column->append("<div class='text-center'>".$infoguru->render()."</div>");
@@ -56,6 +59,10 @@ class HomeController extends Controller
                     $column->append("<div class='text-center'>".$infokelas->render()."</div>");
                 });
 
+                $row -> column(3, function(Column $column) use($infojurusan) {
+                    $column->append("<div class='text-center'>".$infojurusan->render()."</div>");
+                });
+
                 $row -> column(3, function(Column $column) use($infomapel) {
                     $column->append("<div class='text-center'>".$infomapel->render()."</div>");
                 });
@@ -63,6 +70,7 @@ class HomeController extends Controller
                 $row -> column(3, function(Column $column) use($infojam) {
                     $column->append("<div class='text-center'>".$infojam->render()."</div>");
                 });
+
             })
 
             // ->row($infoguru -> render())
